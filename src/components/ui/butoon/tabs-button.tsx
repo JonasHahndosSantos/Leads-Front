@@ -16,13 +16,13 @@ export default function TabsButton({campo1, campo2, ClassName, onSelect, value}:
             <TabsList className="grid w-fit grid-cols-2">
                 <TabsTrigger
                     value="pendente"
-                    className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white cursor-pointer"
                 >
                     <Users className="h-4 w-4"/> {campo1}
                 </TabsTrigger>
                 <TabsTrigger
                     value="concluido"
-                    className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white cursor-pointer"
                 >
                     <CircleCheckBig className="h-4 w-4"/> {campo2}
                 </TabsTrigger>

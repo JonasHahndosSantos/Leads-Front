@@ -77,36 +77,70 @@ export default function LeadItem({ lead, onLeadUpdated, interesse }: LeadItemPro
     }
 
     return (
-        <TableRow key={lead.id_leads_comercial}>
+        <TableRow key={lead.id_leads_comercial} className={"hover:bg-gray-50"}>
             <TableCell className="py-4">
                 <div className="flex items-center gap-3">
-                    <Avatar className={"h-9 w-9 font-semibold border-0"}>
-                        <AvatarFallback className="bg-blue-500 text-white">{initials}</AvatarFallback>
-                    </Avatar>
+                    {lead.nome ? (
+                        <Avatar className={"h-9 w-9 font-semibold border-0"}>
+                            <AvatarFallback className="bg-blue-500 text-white">{initials}</AvatarFallback>
+                        </Avatar>
+                    ):(
+                        <Avatar className={"invisible h-9 w-9"}>
+                        </Avatar>
+                    )}
+
                     <div>
-                        <div className="flex font-medium text-gray-900">
-                            {lead.nome}
-                            <CopyDados item={lead.nome}/>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                            {lead.email}
-                            <CopyDados item={lead.email}/>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                            {lead.cnpj}
-                            <CopyDados item={lead.cnpj}/>
-                        </div>
+                        {lead.nome ? (
+                            <div className="flex font-medium text-gray-900">
+                                {lead.nome}
+                                <CopyDados item={lead.nome}/>
+                            </div>
+                            ):(
+                            <span className="text-gray-400 font-bold text-lg pl-6">—</span>
+                        )}
+
+                        {lead.email ? (
+                            <div className="flex items-center text-sm text-gray-600">
+                                {lead.email}
+                                <CopyDados item={lead.email}/>
+                            </div>
+                        ):(
+                            <span className="text-gray-400 font-bold text-lg">—</span>
+                        )}
+                        {lead.cnpj ? (
+                            <div className="flex items-center text-sm text-gray-600">
+                                {lead.cnpj}
+                                <CopyDados item={lead.cnpj}/>
+                            </div>
+                        ): (
+                            <span className="text-gray-400 font-bold text-lg">—</span>
+                        )}
+
                     </div>
                 </div>
             </TableCell>
             <TableCell>
-                <div className="text-sm text-gray-700">{lead.fonte}</div>
+                {lead.fonte ? (
+                    <div className="text-sm text-gray-700">{lead.fonte}</div>
+                ):(
+                    <span className="text-gray-400 font-bold text-lg pl-5 ">—</span>
+                )}
+
             </TableCell>
             <TableCell>
-                <div className="text-sm text-blue-600">{lead.anuncio}</div>
-                <div className="text-sm text-gray-600">{lead.meio}</div>
+                {lead.anuncio ? (
+                    <div className="text-sm text-blue-600">{lead.anuncio}</div>
+                ):(
+                    <div className="flex h-5 w-9 items-center justify-center" > <span className="text-gray-400 font-bold text-lg pl-9">—</span></div>
+                )}
+                {lead.anuncio ? (
+                    <div className="text-sm text-blue-600">{lead.meio}</div>
+                ):(
+                    <div className="flex h-5 w-9 items-center justify-center" ><span className="text-gray-400 font-bold text-lg pl-9">—</span></div>
+
+                )}
             </TableCell>
-            {interesse !== "revenda" && (
+            {interesse.toLowerCase() !== "revenda" && (
                 <TableCell>
                     {localInteresse === "revenda" ? (
                         <div className="relative flex-1 w-50 sm:max-w-xs flex items-center justify-center">

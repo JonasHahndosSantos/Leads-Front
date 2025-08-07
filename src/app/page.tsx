@@ -1,6 +1,5 @@
-
 'use client';
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import {Input} from "@/components/ui/input"
 import {Users, Clock, Calendar, Search,} from "lucide-react"
 import LeadList from "@/features/leads/listas/lead-list";
@@ -9,35 +8,63 @@ import FilterDropdown from "@/components/ui/dropdown/filter-dropdown";
 import TabsButton from "@/components/ui/butoon/tabs-button";
 import UseLeads from "@/hooks/use-leads";
 import {useLeadsCount} from "@/hooks/use-leads-count";
+import PaginacaoPage from "@/features/leads/pagination/paginacao";
 
 export default function LeadsDashboard() {
     const [status, setStatus] = useState("pendente");
-    const [interesse, setInteresse] = useState("Revenda");
+    const [interesse, setInteresse] = useState("all");
     const [fonte, setFonte] = useState("all");
     const [refreshKey, setRefreshKey] = useState(0);
 
-    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, refreshKey });
-    const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount();
+    const [busca, setBusca] = useState('');
+    const [debouncedBusca, setDebouncedBusca] = useState("");
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedBusca(busca);
+        }, 300);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [busca]);
 
     const handleStatus = (newStatus: string) => {
         setStatus(newStatus);
+        setPageAtual(1);
     }
     const handleInteresse = (newInteresse: string) => {
         setInteresse(newInteresse);
+        setPageAtual(1);
     }
     const handleFonte = (newFonte: string) => {
         setFonte(newFonte);
+        setPageAtual(1);
     }
 
+    // CORREÇÃO: Coloque a declaração do hook antes das variáveis que o usam
+    const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount({status, interesse, fonte, busca: debouncedBusca});
     const handleLeadUpdated = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };
 
+    const statusValue = status === "pendente" ? "Leads ativos" : "Leads Concluídos"
+    const textStatus = status === "pendente" ? "Todos os leads Ativos" : "Todos os leads Concluídos"
+    const countAtivo = status === "pendente" ? "Total de leads Ativos" : "Todos os leads Concluídos"
+    const countRevenda = status === "pendente" ? "Total de leads Ativos para Revenda" : "Total de leads Concluidos para Revenda"
+    const countUtilizacao = status === "pendente" ? "Total de leads Ativos para Utilização" : "Total de leads Concluidos para Utilização"
+
+    // Agora leadsCount já existe e pode ser usado
     const leadsAtivos = leadsCount?.total_ativos ?? 0;
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
 
-    if (loading || loadingCount) {
+    const [pageAtual, setPageAtual] = useState(1);
+
+    const pageMax = Math.ceil(leadsAtivos / 10) || 1;
+
+    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, refreshKey, page: pageAtual, busca: debouncedBusca});
+
+    if ((loading && leads.length === 0) || (loadingCount && leadsCount === null)) {
         return <div className="p-8 text-center">Carregando leads...</div>;
     }
 
@@ -53,9 +80,9 @@ export default function LeadsDashboard() {
             </header>
 
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <StatCard title="Total de Leads Ativos" value={leadsAtivos} icon={<Users className="h-6 w-6"/>}/>
-                <StatCard title="Total Leads Revenda" value={leadsRevenda} icon={<Clock className="h-6 w-6"/>}/>
-                <StatCard title="Total Leads Utilização" value={leadsUtilizacao} icon={<Calendar className="h-6 w-6"/>}/>
+                <StatCard title={countAtivo} value={leadsAtivos} icon={<Users className="h-6 w-6"/>}/>
+                <StatCard title={countRevenda} value={leadsRevenda} icon={<Clock className="h-6 w-6"/>}/>
+                <StatCard title={countUtilizacao} value={leadsUtilizacao} icon={<Calendar className="h-6 w-6"/>}/>
             </section>
 
             <section className="bg-white p-6 rounded-lg shadow-sm">
@@ -65,7 +92,12 @@ export default function LeadsDashboard() {
                 <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
                     <div className="relative flex-1 w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"/>
-                        <Input placeholder="Buscar por nome..." className="pl-9 w-full"/>
+                        <Input
+                            placeholder="Buscar por nome..."
+                            className="pl-9 w-full"
+                            value={busca}
+                            onChange={(e) => setBusca(e.target.value)}
+                        />
                     </div>
                     <FilterDropdown
                         label="Todas as Origens"
@@ -90,12 +122,18 @@ export default function LeadsDashboard() {
                     />
                 </div>
                 <div className="mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{leads.length} Leads ativos</h3>
-                    <p className="text-sm text-gray-600">Todos os leads ativos</p>
+                    <h3 className="text-lg font-semibold text-gray-900">{leadsAtivos} {statusValue}</h3>
+                    <p className="text-sm text-gray-600">{textStatus}</p>
                 </div>
                 <div style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}>
                     <LeadList leads={leads} onLeadUpdated={handleLeadUpdated} interesse={interesse} />
                 </div>
+                <PaginacaoPage
+                    pageAtual={pageAtual}
+                    pageMax={pageMax}
+                    onPageChange={setPageAtual}
+                />
+
             </section>
         </div>
     );
