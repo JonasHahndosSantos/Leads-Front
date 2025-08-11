@@ -1,8 +1,9 @@
 "use client";
 import {Table, TableHeader, TableHead, TableBody, TableRow} from "@/components/ui/table";
 import {LeadType} from "@/features/leads/schemas/lead-schema";
-import {CalendarDays, Megaphone, User, Users, Zap} from "lucide-react";
+import {CalendarDays, Handshake, Megaphone, User, Zap} from "lucide-react";
 import LeadItem from "@/features/leads/itens/lead-item";
+import {ListaVazia} from "@/components/sections/listas/lista-vazia";
 
 interface LeadListProps {
     leads: LeadType[];
@@ -13,6 +14,9 @@ interface LeadListProps {
 
 export default function LeadList({leads, onLeadUpdated, interesse}: LeadListProps) {
 
+    if(leads.length === 0) return (
+        <ListaVazia icone={true} descricao={"Nenhum item encontrado. Tente ajustar os filtros"}/>
+    );
     return (
         <Table>
             <TableHeader>
@@ -22,7 +26,7 @@ export default function LeadList({leads, onLeadUpdated, interesse}: LeadListProp
                         Contato
                     </TableHead>
                     <TableHead className="min-w-[120px] flex-1 text-gray-500">
-                        <Zap className="inline-block h-4 w-4 mr-2 text-yellow-500"/>
+                        <Zap className="inline-block h-4 w-4 mr-2 text-orange-500"/>
                         Origem
                     </TableHead>
                     <TableHead className="min-w-[150px] flex-1 text-gray-500">
@@ -31,13 +35,13 @@ export default function LeadList({leads, onLeadUpdated, interesse}: LeadListProp
                     </TableHead>
                     {interesse.toLowerCase() !== "revenda" && (
                         <TableHead className="min-w-[150px] flex-1 text-gray-500 pl-15">
-                            <Users className="inline-block h-4 w-4 mr-2 "/>
+                            <Handshake className="inline-block h-4 w-4 mr-2 text-orange-400 "/>
                             Parceiro
                         </TableHead>
                     )}
                     <TableHead className="min-w-[100px] flex-1 text-gray-500 pl-7">Tipo</TableHead>
                     <TableHead className="min-w-[150px] flex-1 text-gray-500 pl-6">
-                        <CalendarDays className="inline-block h-4 w-4 mr-2 text-gray-500"/>
+                        <CalendarDays className="inline-block h-4 w-4 mr-2 text-orange-400"/>
                         Data
                     </TableHead>
                     <TableHead className="min-w-[100px] flex-1 text-gray-500 pl-8">Ações</TableHead>

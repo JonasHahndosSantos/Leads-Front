@@ -12,7 +12,7 @@ import PaginacaoPage from "@/features/leads/pagination/paginacao";
 
 export default function LeadsDashboard() {
     const [status, setStatus] = useState("pendente");
-    const [interesse, setInteresse] = useState("all");
+    const [interesse, setInteresse] = useState("revenda");
     const [fonte, setFonte] = useState("all");
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -41,8 +41,7 @@ export default function LeadsDashboard() {
         setPageAtual(1);
     }
 
-    // CORREÇÃO: Coloque a declaração do hook antes das variáveis que o usam
-    const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount({status, interesse, fonte, busca: debouncedBusca});
+    const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount({status, interesse, fonte, busca: debouncedBusca, refreshKey});
     const handleLeadUpdated = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };
@@ -53,7 +52,6 @@ export default function LeadsDashboard() {
     const countRevenda = status === "pendente" ? "Total de leads Ativos para Revenda" : "Total de leads Concluidos para Revenda"
     const countUtilizacao = status === "pendente" ? "Total de leads Ativos para Utilização" : "Total de leads Concluidos para Utilização"
 
-    // Agora leadsCount já existe e pode ser usado
     const leadsAtivos = leadsCount?.total_ativos ?? 0;
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
@@ -128,11 +126,14 @@ export default function LeadsDashboard() {
                 <div style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}>
                     <LeadList leads={leads} onLeadUpdated={handleLeadUpdated} interesse={interesse} />
                 </div>
-                <PaginacaoPage
-                    pageAtual={pageAtual}
-                    pageMax={pageMax}
-                    onPageChange={setPageAtual}
-                />
+                {leadsAtivos !== 0 && (
+                    <PaginacaoPage
+                        pageAtual={pageAtual}
+                        pageMax={pageMax}
+                        onPageChange={setPageAtual}
+                    />
+                )}
+
 
             </section>
         </div>

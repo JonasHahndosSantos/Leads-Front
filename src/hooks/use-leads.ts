@@ -23,44 +23,50 @@ export default function UseLeads({ status, interesse, fonte, page, limit=10, ref
 
     const filterInteresse = interesse === 'all' ? null : interesse;
     const filterFonte = fonte === 'all' ? null : fonte;
-    const filterbusca = busca === 'all' ? null : busca;
+
+    const [filterBusca, setFilterBusca] = useState(busca);
 
     useEffect(() => {
-        const delay = setTimeout(async () => {
-            try {
-                if (!isInitialMount.current) {
-                    setIsFetching(true);
-                }
-                const offset = page;
+        const handler = setTimeout(() => {
+            setFilterBusca(busca);
+        }, 300);
 
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [busca]);
+
+    useEffect(() => {
+        const fetchLeads = async () => {
+            if (isInitialMount.current) {
+                setLoading(true);
+                isInitialMount.current = false;
+            } else {
+                setIsFetching(true);
+            }
+            setError(null);
+
+            try {
                 const newLeads = await getLeads({
                     status,
                     interesse: filterInteresse,
                     fonte: filterFonte,
-                    busca: filterbusca,
+                    busca: filterBusca,
                     limit,
-                    offset
+                    offset: page ?? 1,
                 });
                 setLeads(newLeads);
-                setError(null);
             } catch (err) {
                 setError("Não foi possível carregar os leads.");
             } finally {
                 setLoading(false);
                 setIsFetching(false);
             }
-        }, 300);
-
-        return () => {
-            clearTimeout(delay);
         };
-    }, [status, filterInteresse, filterFonte, filterbusca, page, limit, refreshKey]);
 
-    useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-        }
-    }, []);
+        fetchLeads();
+
+    }, [status, interesse, fonte, filterBusca, page, limit, refreshKey]);
 
     return { leads, loading, isFetching, error };
 }

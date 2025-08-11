@@ -1,80 +1,80 @@
-import { TableRow, TableCell } from "@/components/ui/table";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {TableRow, TableCell} from "@/components/ui/table";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {Badge} from "@/components/ui/badge";
+import {Button} from "@/components/ui/button";
 import {CheckCircle, ChevronDown, RotateCcw} from "lucide-react";
-import type { LeadType } from "@/features/leads/schemas/lead-schema";
-import {Input} from "@/components/ui/input";
-import React, {useState} from "react";
+import type {LeadType} from "@/features/leads/schemas/lead-schema";
+import React, {useEffect, useState} from "react";
 import FilterDropdown from "@/components/ui/dropdown/filter-dropdown";
 import CopyDados from "@/features/leads/components/copy-dados";
 import {useUpdateLeads} from "@/hooks/use-lead-update";
+import {formatarCNPJ} from "@/features/leads/hooks/formatar-cnpj";
+import Parceiros from "@/features/leads/components/parceiros";
+import {cn} from "@/lib/utils";
+import FormatarData from "@/features/leads/hooks/formatar-data";
 
 interface LeadItemProps {
     lead: LeadType;
     onLeadUpdated: () => void;
     interesse: string;
 }
-const formatarData = (dataString: any) => {
-    const dataObj = new Date(dataString);
-    const opcoes = {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    } as const;
-    return new Intl.DateTimeFormat('pt-BR', opcoes).format(dataObj);
-};
 
-export default function LeadItem({ lead, onLeadUpdated, interesse }: LeadItemProps) {
-    const [parceiros, setParceiros] = useState(lead.parceiros);
-    const handleInputValue = (event: any) => {
-        setParceiros(event.target.value);
-    };
+export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps) {
+
     const [localInteresse, setLocalInteresse] = useState(lead.interesse);
-    const {updateLead, loading, error} = useUpdateLeads();
-    const [ localLeadStatus, setLocalLeadStatus ] = useState(lead.status);
-    const initials = lead.nome ? lead.nome.split(' ').map(n => n[0]).join('') : '';
+    const {updateLead, loading, error, data, resetData} = useUpdateLeads();
+    const [localLeadStatus, setLocalLeadStatus] = useState(lead.status);
     const interessePrincipal = lead.interesse?.toLowerCase() || 'utilização';
     const statusButtonText = localLeadStatus === "pendente" ? "Concluir" : "Voltar para Ativo";
     const interesseText = localInteresse === "revenda" ? "Revenda" : "Utilização";
+    const nomeCompleto = lead.nome;
+    const parceiroSave = async (novoValor: string) => {
+        if (novoValor !== lead.parceiros) {
+            const updatedLead = {...lead, parceiros: novoValor};
+            await updateLead(updatedLead);
+        }
+    };
+    const renderValue = (value: string | null | undefined, customClass = "") => {
+        const finalClass = cn("text-sm text-gray-700", customClass);
+        return value
+            ? <div className={finalClass}>{value}</div>
+            : <span className="text-gray-400 font-bold text-lg pl-9">—</span>;
+    };
+    const getInitials = (nome: any) => {
+        const nomes = nome?.trim().split(' ').filter((n: any) => n) || [];
+        if (nomes.length > 1) {
+            return `${nomes[0][0]}${nomes[nomes.length - 1][0]}`;
+        }
+        if (nomes.length === 1) {
+            return nomes[0][0];
+        }
+        return '';
+    };
+
+    useEffect(() => {
+        if (data) {
+            onLeadUpdated();
+            resetData();
+        }
+    }, [data, onLeadUpdated, resetData]);
+
 
     const StatusUpdate = async () => {
         const newStatus = localLeadStatus === "pendente" ? "concluido" : "pendente";
-        const leadToUpdate = { ...lead, status: newStatus };
+        const leadToUpdate = {...lead, status: newStatus};
 
-        try {
-            await updateLead(leadToUpdate);
-            onLeadUpdated();
-            setLocalLeadStatus(newStatus);
-        } catch (err) {
-            console.error("Falha ao atualizar o status do lead:", err);
-        }
+        await updateLead(leadToUpdate);
+        setLocalLeadStatus(newStatus);
+
     };
+
     const handleInteresseUpdate = async (novoInteresse: string) => {
-        const leadToUpdate = { ...lead, interesse: novoInteresse };
-        try {
-            await updateLead(leadToUpdate);
-            onLeadUpdated();
-            setLocalInteresse(novoInteresse);
-        } catch (err) {
-            console.error("Falha ao atualizar o interesse do lead:", err);
-        }
-    };
+        const leadToUpdate = {...lead, interesse: novoInteresse};
 
-    const handleBlur = async () => {
-        if(parceiros !== lead.parceiros) {
-            const updatedLead = {
-                ...lead,
-                parceiros: parceiros
-            }
-            try {
-                await updateLead(updatedLead);
-                onLeadUpdated();
-            }catch (error) {}
-        }
-    }
+        await updateLead(leadToUpdate);
+        setLocalInteresse(novoInteresse)
+
+    };
 
     return (
         <TableRow key={lead.id_leads_comercial} className={"hover:bg-gray-50"}>
@@ -82,64 +82,40 @@ export default function LeadItem({ lead, onLeadUpdated, interesse }: LeadItemPro
                 <div className="flex items-center gap-3">
                     {lead.nome ? (
                         <Avatar className={"h-9 w-9 font-semibold border-0"}>
-                            <AvatarFallback className="bg-blue-500 text-white">{initials}</AvatarFallback>
+                            <AvatarFallback className="bg-blue-500 text-white">{getInitials(lead.nome)}</AvatarFallback>
                         </Avatar>
-                    ):(
+                    ) : (
                         <Avatar className={"invisible h-9 w-9"}>
                         </Avatar>
                     )}
 
                     <div>
-                        {lead.nome ? (
-                            <div className="flex font-medium text-gray-900">
-                                {lead.nome}
-                                <CopyDados item={lead.nome}/>
-                            </div>
-                            ):(
-                            <span className="text-gray-400 font-bold text-lg pl-6">—</span>
-                        )}
+                        <div className="flex font-medium text-gray-900">
+                            {renderValue(lead.nome, "font-medium text-gray-900")}
+                            {lead.nome && <CopyDados item={lead.nome}/>}
+                        </div>
 
-                        {lead.email ? (
-                            <div className="flex items-center text-sm text-gray-600">
-                                {lead.email}
-                                <CopyDados item={lead.email}/>
-                            </div>
-                        ):(
-                            <span className="text-gray-400 font-bold text-lg">—</span>
-                        )}
-                        {lead.cnpj ? (
-                            <div className="flex items-center text-sm text-gray-600">
-                                {lead.cnpj}
-                                <CopyDados item={lead.cnpj}/>
-                            </div>
-                        ): (
-                            <span className="text-gray-400 font-bold text-lg">—</span>
-                        )}
+                        <div className="flex items-center text-sm text-gray-600">
+                            {renderValue(lead.email, "font-medium text-gray-600")}
+                            <CopyDados item={lead.email}/>
+                        </div>
 
+                        <div className="flex items-center text-sm text-gray-600">
+                            {renderValue(formatarCNPJ(lead.cnpj))}
+                            <CopyDados item={lead.cnpj}/>
+                        </div>
                     </div>
                 </div>
             </TableCell>
             <TableCell>
-                {lead.fonte ? (
-                    <div className="text-sm text-gray-700">{lead.fonte}</div>
-                ):(
-                    <span className="text-gray-400 font-bold text-lg pl-5 ">—</span>
-                )}
-
+                <div className="text-sm text-gray-700">{renderValue(lead.fonte)}</div>
             </TableCell>
+
             <TableCell>
-                {lead.anuncio ? (
-                    <div className="text-sm text-blue-600">{lead.anuncio}</div>
-                ):(
-                    <div className="flex h-5 w-9 items-center justify-center" > <span className="text-gray-400 font-bold text-lg pl-9">—</span></div>
-                )}
-                {lead.anuncio ? (
-                    <div className="text-sm text-blue-600">{lead.meio}</div>
-                ):(
-                    <div className="flex h-5 w-9 items-center justify-center" ><span className="text-gray-400 font-bold text-lg pl-9">—</span></div>
-
-                )}
+                <div className="text-sm text-blue-600">{renderValue(lead.anuncio)}</div>
+                <div className="text-sm text-purple-700">{renderValue(lead.meio)}</div>
             </TableCell>
+
             {interesse.toLowerCase() !== "revenda" && (
                 <TableCell>
                     {localInteresse === "revenda" ? (
@@ -147,14 +123,7 @@ export default function LeadItem({ lead, onLeadUpdated, interesse }: LeadItemPro
                             <span className="text-gray-400 font-bold text-lg">—</span>
                         </div>
                     ) : (
-                        <div className="relative flex-1 w-50 sm:max-w-xs">
-                            <Input
-                                value={parceiros}
-                                onChange={handleInputValue}
-                                onBlur={handleBlur}
-                                className="pl-7 w-full"
-                            />
-                        </div>
+                        <Parceiros parceiro={lead.parceiros} onSave={parceiroSave}/>
                     )}
                 </TableCell>
             )}
@@ -177,13 +146,14 @@ export default function LeadItem({ lead, onLeadUpdated, interesse }: LeadItemPro
                             }`}
                         >
                             {interesseText}
-                            <ChevronDown className="w-4 h-4" />
+                            <ChevronDown className="w-4 h-4"/>
                         </Badge>
                     }
+                    value={interessePrincipal}
                 />
             </TableCell>
             <TableCell className="text-sm text-gray-600">
-                {formatarData(lead.data_hora)}
+                {FormatarData(lead.data_hora)}
             </TableCell>
             <TableCell>
                 <Button
@@ -196,9 +166,9 @@ export default function LeadItem({ lead, onLeadUpdated, interesse }: LeadItemPro
                     onClick={StatusUpdate}
                     disabled={loading}>
                     {statusButtonText === "Concluir" ? (
-                        <CheckCircle className="w-5 h-5" />
-                    ):(
-                        <RotateCcw className="w-5 h-5" />
+                        <CheckCircle className="w-5 h-5"/>
+                    ) : (
+                        <RotateCcw className="w-5 h-5"/>
                     )}
 
                     {loading ? "Aguardar..." : statusButtonText}

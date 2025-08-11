@@ -6,7 +6,7 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import {Check, ChevronDown } from "lucide-react";
 
 interface FilterItem {
     value: string;
@@ -45,9 +45,12 @@ export default function FilterDropdown({ label, items, onSelect, customTrigger, 
                     <DropdownMenuItem
                         key={item.value}
                         onClick={() => onSelect?.(item.value)}
-                        className={item.value === value ? "font-bold bg-gray-100" : ""}
+                        className={`flex justify-between items-center ${item.value === value ? "font-bold bg-gray-100" : ""}`}
                     >
-                        {item.label}
+                        <span>{item.label}</span>
+                        {item.value === value && (
+                            <Check className="h-4 w-4 text-primary" />
+                        )}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

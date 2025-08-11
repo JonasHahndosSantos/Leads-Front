@@ -13,8 +13,8 @@ interface GetLeadsParams {
 export async function getLeads({ limit, offset, status, interesse, fonte, busca }: GetLeadsParams): Promise<LeadType[]> {
     const params = new URLSearchParams();
 
-    params.append('pageSize', limit);
-    params.append('page', offset);
+    params.append('pageSize', String(limit));
+    params.append('page', String(offset));
 
     if (status) {
         params.append('status', status);

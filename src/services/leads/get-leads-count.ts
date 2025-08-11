@@ -7,8 +7,8 @@ export interface LeadsCountType {
 }
 interface getParams {
     status: string;
-    interesse?: string;
-    fonte?: string;
+    interesse?: string | null;
+    fonte?: string | null;
     busca?: string;
 }
 export async function getLeadsCount({status, interesse, fonte, busca}: getParams ): Promise<LeadsCountType> {

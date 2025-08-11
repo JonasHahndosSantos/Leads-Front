@@ -22,6 +22,7 @@ export function useUpdateLeads() {
             setLoading(false);
         }
     };
+    const resetData = () => setData(null);
 
-    return { updateLead, loading, error, data };
+    return { updateLead, loading, error, data, resetData };
 }

@@ -14,16 +14,19 @@ interface LeadPageProps {
 }
 
 export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPageProps){
-
+    const pageScroll = (page: number) => {
+        onPageChange(page);
+        window.scrollTo(0,0)
+    }
     const handlePrevious = () => {
         if (pageAtual > 1) {
-            onPageChange(pageAtual - 1);
+            pageScroll(pageAtual - 1);
         }
     };
 
     const handleNext = () => {
         if (pageAtual < pageMax) {
-            onPageChange(pageAtual + 1);
+            pageScroll(pageAtual + 1);
         }
     };
 
@@ -49,13 +52,12 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                     <PaginationPrevious
                         className={"cursor-pointer"}
                         onClick={handlePrevious}
-                        disabled={pageAtual === 1}
                     />
                 </PaginationItem>
 
                 {pageMax > 1 && pageAtual > 2 && (
                     <PaginationItem>
-                        <PaginationLink className={"cursor-pointer"} onClick={() => onPageChange(1)}>
+                        <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(1)}>
                             1
                         </PaginationLink>
                     </PaginationItem>
@@ -65,7 +67,7 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                 {pagesToShow.map(page => (
                     <PaginationItem key={page}>
                         <PaginationLink className={"cursor-pointer"}
-                            onClick={() => onPageChange(page)}
+                            onClick={() => pageScroll(page)}
                             isActive={page === pageAtual}
                         >
                             {page}
@@ -76,7 +78,7 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                 {showTrailingEllipsis && <PaginationItem><PaginationEllipsis /></PaginationItem>}
                 {pageMax > 1 && pageAtual < pageMax - 1 && (
                     <PaginationItem>
-                        <PaginationLink className={"cursor-pointer"} onClick={() => onPageChange(pageMax)}>
+                        <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(pageMax)}>
                             {pageMax}
                         </PaginationLink>
                     </PaginationItem>
@@ -86,7 +88,6 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                     <PaginationNext
                         className={"cursor-pointer"}
                         onClick={handleNext}
-                        disabled={pageAtual === pageMax}
                     />
                 </PaginationItem>
             </PaginationContent>

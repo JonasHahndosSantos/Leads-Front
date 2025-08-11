@@ -11,9 +11,10 @@ interface useGet{
   interesse?: string;
   fonte?: string;
   busca?: string;
+  refreshKey: number;
 }
 
-export function useLeadsCount({ status, interesse, fonte, busca }: useGet): UseLeadsCountResult {
+export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: useGet): UseLeadsCountResult {
   const [data, setData] = useState<LeadsCountType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState(false);
@@ -46,7 +47,7 @@ export function useLeadsCount({ status, interesse, fonte, busca }: useGet): UseL
     isInitialMount.current = false;
 
     return () => clearTimeout(delay);
-  }, [status, interesse, fonte, busca]);
+  }, [status, interesse, fonte, busca, refreshKey]);
 
   return { data, loading, error };
 }
