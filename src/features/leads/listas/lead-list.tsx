@@ -22,33 +22,33 @@ export default function LeadList({leads, onLeadUpdated, interesse}: LeadListProp
             <TableHeader>
                 <TableRow className="hover:bg-transparent">
                     <TableHead className="min-w-[200px] flex-1 text-gray-500 pl-13">
-                        <User className="inline-block h-4 w-4 mr-2 text-orange-400"/>
+                        <User className="inline-block h-4 w-4 mr-2 text-gray-500"/>
                         Contato
                     </TableHead>
                     <TableHead className="min-w-[120px] flex-1 text-gray-500">
-                        <Zap className="inline-block h-4 w-4 mr-2 text-orange-400"/>
+                        <Zap className="inline-block h-4 w-4 mr-2 text-gray-500"/>
                         Origem
                     </TableHead>
                     <TableHead className="min-w-[150px] flex-1 text-gray-500">
-                        <Megaphone className="inline-block h-4 w-4 mr-2 text-orange-400"/>
+                        <Megaphone className="inline-block h-4 w-4 mr-2 text-gray-500"/>
                         Anúncio
                     </TableHead>
                     {interesse.toLowerCase() !== "revenda" && (
                         <TableHead className="min-w-[150px] flex-1 text-gray-500 pl-15">
-                            <Handshake className="inline-block h-4 w-4 mr-2 text-orange-400 "/>
+                            <Handshake className="inline-block h-4 w-4 mr-2 text-gray-500 "/>
                             Parceiro
                         </TableHead>
                     )}
                     <TableHead className="min-w-[100px] flex-1 text-gray-500 pl-5">
-                        <Briefcase className="inline-block h-4 w-4 mr-2 text-orange-400"/>
+                        <Briefcase className="inline-block h-4 w-4 mr-2 text-gray-500"/>
                         Tipo
                     </TableHead>
                     <TableHead className="min-w-[150px] flex-1 text-gray-500 pl-6">
-                        <CalendarDays className="inline-block h-4 w-4 mr-2 text-orange-400"/>
+                        <CalendarDays className="inline-block h-4 w-4 mr-2 text-gray-500"/>
                         Data
                     </TableHead>
                     <TableHead className="min-w-[100px] flex-1 text-gray-500 pl-6">
-                        <MoreVertical className="inline-block h-4 w-4 mr-1 text-orange-400"/>
+                        <MoreVertical className="inline-block h-4 w-4 mr-1 text-gray-600"/>
                         Ações
                     </TableHead>
                 </TableRow>

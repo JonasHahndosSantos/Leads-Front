@@ -1,6 +1,3 @@
-interface DataProps {
-    data: any;
-}
 export default function FormatarData(data: any){
     const dataObj = new Date(data);
     const opcoes = {

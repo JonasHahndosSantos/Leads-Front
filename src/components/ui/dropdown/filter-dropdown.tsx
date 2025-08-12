@@ -32,7 +32,7 @@ export default function FilterDropdown({ label, items, onSelect, customTrigger, 
                 {customTrigger ?? (
                     <Button
                         variant="outline"
-                        className="flex items-center gap-2 w-full sm:w-auto bg-transparent cursor-pointer"
+                        className="flex items-center gap-2 w-full sm:w-auto bg-white cursor-pointer"
                     >
                         {displayLabel}
                         <ChevronDown className="h-4 w-4" />
@@ -45,7 +45,7 @@ export default function FilterDropdown({ label, items, onSelect, customTrigger, 
                     <DropdownMenuItem
                         key={item.value}
                         onClick={() => onSelect?.(item.value)}
-                        className={`flex justify-between items-center ${item.value === value ? "font-bold bg-gray-100" : ""}`}
+                        className={`flex justify-between items-center ${item.value === value ? " bg-gray-100" : ""}`}
                     >
                         <span>{item.label}</span>
                         {item.value === value && (
