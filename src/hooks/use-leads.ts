@@ -1,4 +1,3 @@
-
 import {useState, useEffect, useRef} from 'react';
 import { getLeads } from "@/services/leads/get-leads";
 import { LeadType } from "@/features/leads/schemas/lead-schema";
@@ -11,9 +10,10 @@ interface UseLeadsProps {
     page?: number;
     limit?: number;
     refreshKey: number;
+    pollingInterval?: number;
 }
 
-export default function UseLeads({ status, interesse, fonte, page, limit=10, refreshKey, busca }: UseLeadsProps) {
+export default function UseLeads({ status, interesse, fonte, page, limit=10, refreshKey, busca, pollingInterval = 0 }: UseLeadsProps) {
     const [leads, setLeads] = useState<LeadType[]>([]);
     const [loading, setLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(false);
@@ -29,7 +29,7 @@ export default function UseLeads({ status, interesse, fonte, page, limit=10, ref
     useEffect(() => {
         const handler = setTimeout(() => {
             setFilterBusca(busca);
-        }, 300);
+        }, 100);
 
         return () => {
             clearTimeout(handler);
@@ -66,7 +66,16 @@ export default function UseLeads({ status, interesse, fonte, page, limit=10, ref
 
         fetchLeads();
 
-    }, [status, interesse, fonte, filterBusca, page, limit, refreshKey]);
+        if (pollingInterval > 0) {
+            const intervalId = setInterval(() => {
+                fetchLeads();
+            }, pollingInterval);
+
+            return () => clearInterval(intervalId);
+        }
+
+
+    }, [status, interesse, fonte, filterBusca, page, limit, refreshKey, pollingInterval]);
 
     return { leads, loading, isFetching, error };
 }

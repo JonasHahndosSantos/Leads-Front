@@ -27,7 +27,7 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
     const interessePrincipal = lead.interesse?.toLowerCase() || 'utilização';
     const statusButtonText = localLeadStatus === "pendente" ? "Concluir" : "Voltar para Ativo";
     const interesseText = localInteresse === "revenda" ? "Revenda" : "Utilização";
-    const nomeCompleto = lead.nome;
+    const parceiroValidator = lead.parceiros === null  ? " " : lead.parceiros;
     const parceiroSave = async (novoValor: string) => {
         if (novoValor !== lead.parceiros) {
             const updatedLead = {...lead, parceiros: novoValor};
@@ -123,7 +123,7 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
                             <span className="text-gray-400 font-bold text-lg">—</span>
                         </div>
                     ) : (
-                        <Parceiros parceiro={lead.parceiros} onSave={parceiroSave}/>
+                        <Parceiros parceiro={parceiroValidator} onSave={parceiroSave}/>
                     )}
                 </TableCell>
             )}

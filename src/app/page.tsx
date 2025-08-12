@@ -60,7 +60,7 @@ export default function LeadsDashboard() {
 
     const pageMax = Math.ceil(leadsAtivos / 10) || 1;
 
-    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, refreshKey, page: pageAtual, busca: debouncedBusca});
+    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, refreshKey, page: pageAtual, busca: debouncedBusca, pollingInterval: 5000});
 
     if ((loading && leads.length === 0) || (loadingCount && leadsCount === null)) {
         return <div className="p-8 text-center">Carregando leads...</div>;
