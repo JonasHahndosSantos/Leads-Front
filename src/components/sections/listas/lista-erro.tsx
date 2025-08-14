@@ -1,5 +1,5 @@
 import {cn} from "@/lib/utils";
-import {SearchX} from "lucide-react";
+import {AlertCircle} from "lucide-react";
 
 interface ListaVaziaProps {
     icone?: boolean;
@@ -8,7 +8,7 @@ interface ListaVaziaProps {
     className?: string;
 }
 
-export function ListaVazia({descricao, children, className,}: ListaVaziaProps) {
+export function ListaErro({descricao, children, className,}: ListaVaziaProps) {
     return (
         <div
             className={cn(
@@ -16,15 +16,16 @@ export function ListaVazia({descricao, children, className,}: ListaVaziaProps) {
                 className,
             )}
         >
+
             <div
                 className=" flex h-[50px] w-[50px] items-center justify-center rounded-full md:h-[60px] md:w-[60px]">
-                <SearchX
+                <AlertCircle
                     size={36}
-                    className="text-blue-400 md:h-[50px] md:w-[50px]"
+                    className="text-red-400 md:h-[50px] md:w-[50px]"
                 />
             </div>
             <div
-                className="text-texto-card-sm md:text-titulo-card-2 text-blue-400 flex flex-col items-center text-center">
+                className="text-texto-card-sm md:text-titulo-card-2 text-red-500 flex flex-col items-center text-center">
                 <span>{descricao}</span>
                 {children}
             </div>

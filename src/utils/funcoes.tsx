@@ -14,6 +14,6 @@ export const renderValue = (value: string | null | undefined, customClass = "") 
     const finalClass = cn("text-sm text-gray-700", customClass);
     return value
         ? <div className={finalClass}>{value}</div>
-        : <span className="text-gray-400 italic">Não informado</span>;
+        : <span className="text-gray-400 italic font-normal text-sm">Não informado</span>;
 };
 

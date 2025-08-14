@@ -1,17 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {Home, FileSearch} from "lucide-react";
+import {Home, FileSearch, Frown, LocateOff, Ghost, FileX} from "lucide-react";
 import Link from "next/link";
 import { CardContent } from "@/components/ui/CardContent";
 import { Card } from "@/components/ui/card";
 
 export default function NotFoundd() {
     return (
-        <div className="flex h-screen w-full items-center justify-center border border-black p-4">
-            <Card>
+        <div className="flex h-screen w-full items-center justify-center p-4">
+            <Card >
                 <CardContent className="space-y-6 p-8 text-center justify-center items-center">
-                    <FileSearch className="h-24 w-24 text-gray-400 mx-auto" />
+                    <FileX className="h-24 w-24 text-blue-600 mx-auto" />
                     <div className="space-y-3">
                         <h1 className="text-6xl font-bold text-gray-700">404</h1>
                         <h2 className="text-xl font-semibold text-gray-600">
@@ -24,9 +24,9 @@ export default function NotFoundd() {
 
                     <div className="space-y-3 pt-2">
                         <Link href="/" className="block">
-                            <Button className="bg-gray-700 w-full rounded-lg py-3 font-medium text-white transition-colors hover:bg-gray-600">
+                            <Button className="bg-blue-700 w-full rounded-lg py-4 font-medium text-white transition-colors hover:bg-blue-600">
                                 <Home className="mr-2 h-5 w-5" />
-                                Voltar ao início
+                                Voltar a Tela principal
                             </Button>
                         </Link>
                     </div>

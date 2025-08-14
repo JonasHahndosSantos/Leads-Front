@@ -13,7 +13,8 @@ interface LeadPageProps {
     onPageChange: (page: number) => void;
 }
 
-export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPageProps){
+export default function PaginacaoPage({pageAtual, pageMax , onPageChange}: LeadPageProps){
+    const numeroPage = Math.ceil(pageMax / 10) || 1;
     const pageScroll = (page: number) => {
         onPageChange(page);
         window.scrollTo(0,0)
@@ -25,24 +26,25 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
     };
 
     const handleNext = () => {
-        if (pageAtual < pageMax) {
+        if (pageAtual < numeroPage) {
             pageScroll(pageAtual + 1);
         }
     };
 
     const pagesToShow = [];
-    if (pageMax > 0) {
+    if (numeroPage > 0) {
         if (pageAtual > 1) {
             pagesToShow.push(pageAtual - 1);
         }
         pagesToShow.push(pageAtual);
-        if (pageAtual < pageMax) {
+        if (pageAtual < numeroPage) {
             pagesToShow.push(pageAtual + 1);
         }
     }
 
     const showLeadingEllipsis = pageAtual > 2;
-    const showTrailingEllipsis = pageAtual < pageMax - 1;
+    const showTrailingEllipsis = pageAtual < numeroPage - 1;
+
 
 
     return (
@@ -55,7 +57,7 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                     />
                 </PaginationItem>
 
-                {pageMax > 1 && pageAtual > 2 && (
+                {numeroPage > 1 && pageAtual > 2 && (
                     <PaginationItem>
                         <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(1)}>
                             1
@@ -76,10 +78,10 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                 ))}
 
                 {showTrailingEllipsis && <PaginationItem><PaginationEllipsis /></PaginationItem>}
-                {pageMax > 1 && pageAtual < pageMax - 1 && (
+                {numeroPage > 1 && pageAtual < numeroPage - 1 && (
                     <PaginationItem>
-                        <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(pageMax)}>
-                            {pageMax}
+                        <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(numeroPage)}>
+                            {numeroPage}
                         </PaginationLink>
                     </PaginationItem>
                 )}

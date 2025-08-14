@@ -1,4 +1,5 @@
-import {TableRow, TableCell} from "@/components/ui/table";
+"use client";
+import { TableCell} from "@/components/ui/table";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
@@ -12,14 +13,18 @@ import {formatarCNPJ} from "@/utils/formatar-cnpj";
 import Parceiros from "@/features/leads/components/parceiros";
 import FormatarData from "@/utils/formatar-data";
 import {getInitials, renderValue} from "@/utils/funcoes";
+import {cn} from "@/lib/utils";
+import {corFonteBg, corFonteText} from "@/features/leads/utils/efeitosCor";
+import { motion } from "framer-motion"; // <-- Importe o motion aqui
 
 interface LeadItemProps {
     lead: LeadType;
     onLeadUpdated: () => void;
     interesse: string;
+    delay: number;
 }
 
-export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps) {
+export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadItemProps) {
 
     const [localInteresse, setLocalInteresse] = useState(lead.interesse);
     const {updateLead, loading, error, data, resetData} = useUpdateLeads();
@@ -56,9 +61,14 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
         await updateLead(leadToUpdate);
         setLocalInteresse(novoInteresse)
     };
-
     return (
-        <TableRow key={lead.id_leads_comercial} className={"hover:bg-gray-50"}>
+        <motion.tr
+            key={lead.id_leads_comercial}
+            className={"hover:bg-gray-50"}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: delay }}
+        >
             <TableCell className="py-4">
                 <div className="flex items-center gap-3">
                     {lead.nome ? (
@@ -70,8 +80,8 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
                         </Avatar>
                     )}
 
-                    <div>
-                        <div className="flex font-medium text-gray-900">
+                    <div className={"min-w-[150px] max-w-[200px]"}>
+                        <div className="flex font-medium text-gray-900 ">
                             {renderValue(lead.nome, "font-medium text-gray-900")}
                             {lead.nome && <CopyDados item={lead.nome}/>}
                         </div>
@@ -89,13 +99,14 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
                 </div>
             </TableCell>
             <TableCell>
-                <div className="text-sm text-gray-700">{renderValue(lead.fonte)}</div>
+                <Badge className={`h-6 font-normal ${corFonteBg(lead.fonte)}`  }>
+                    {renderValue(lead.fonte, cn("text-sm font-semibold", corFonteText(lead.fonte)))}
+                </Badge>
             </TableCell>
-
 
             {lead.anuncio !== null ? (
                 <TableCell>
-                    <div className="text-sm text-gray-700">{lead.anuncio}</div>
+                    <div className="text-sm">{lead.anuncio}</div>
                     <div className="text-sm ">{renderValue(lead.meio)}</div>
                 </TableCell>
             ) : (
@@ -127,7 +138,7 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
                     customTrigger={
                         <Badge
                             variant="outline"
-                            className={`cursor-pointer flex items-center gap-1 ${
+                            className={`cursor-pointer flex items-center gap-1 text-sm ${
                                 localInteresse === "revenda"
                                     ? "bg-blue-100 text-blue-700 border-blue-200"
                                     : "bg-green-100 text-green-700 border-green-200"
@@ -150,8 +161,8 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
                     variant="ghost"
                     className={
                         statusButtonText === "Concluir"
-                            ? "bg-white hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer"
-                            : "bg-white hover:bg-green-50 text-green-600 hover:text-green-700 cursor-pointer"
+                            ? "bg-transparent hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer"
+                            : "bg-transparent hover:bg-orange-50 text-orange-400 hover:text-orange-500 cursor-pointer"
                     }
                     onClick={StatusUpdate}
                     disabled={loading}>
@@ -163,6 +174,6 @@ export default function LeadItem({lead, onLeadUpdated, interesse}: LeadItemProps
                     {loading ? "Aguardar..." : statusButtonText}
                 </Button>
             </TableCell>
-        </TableRow>
+        </motion.tr>
     );
 }

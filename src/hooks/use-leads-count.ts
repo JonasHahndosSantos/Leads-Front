@@ -42,7 +42,7 @@ export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: u
         setLoading(false);
         setIsFetching(false);
       }
-    }, 300);
+    }, 200);
 
     isInitialMount.current = false;
 

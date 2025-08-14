@@ -1,6 +1,6 @@
 'use client';
 import React from "react"
-import {Users, Clock, CalendarDays,} from "lucide-react"
+import {Users, Clock, CalendarDays, Loader2,} from "lucide-react"
 import LeadList from "@/features/leads/listas/lead-list";
 import {StatCard} from "@/components/ui/cards/start-card";
 import UseLeads from "@/hooks/use-leads";
@@ -10,8 +10,7 @@ import LeadsFilter from "@/features/leads/filters/leads-filter";
 import {useLeadsFilters} from "@/features/leads/hooks/use-leads-filter";
 
 export default function LeadsDashboard() {
-    const {status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual,
-    } = useLeadsFilters();
+    const {status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual,} = useLeadsFilters();
 
     const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount({status, interesse, fonte, busca: debouncedBusca, refreshKey});
 
@@ -25,20 +24,19 @@ export default function LeadsDashboard() {
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
 
-    const pageMax = Math.ceil(leadsAtivos / 10) || 1;
-
     const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, refreshKey, page: pageAtual, busca: debouncedBusca, pollingInterval: 5000});
-
+    const isError = !!(error);
     if ((loading && leads.length === 0) || (loadingCount && leadsCount === null)) {
-        return <div className="p-8 text-center">Carregando leads...</div>;
-    }
-
-    if (error || errorCount) {
-        return <div className="p-8 text-center text-red-500">{error}</div>;
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-500 p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-400 mb-4" />
+                <p className="text-lg font-medium">Carregando leads...</p>
+            </div>
+        );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
+        <div className="min-h-screen bg-gray-100 p-8">
             <header className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
                 <p className="text-gray-600">Gerencie e visualize todos os leads das suas campanhas</p>
@@ -66,12 +64,17 @@ export default function LeadsDashboard() {
                     <p className="text-sm text-gray-600">{textStatus}</p>
                 </div>
                 <div style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}>
-                    <LeadList leads={leads} onLeadUpdated={handleLeadUpdated} interesse={interesse} />
+                    <LeadList
+                        leads={leads}
+                        onLeadUpdated={handleLeadUpdated}
+                        interesse={interesse}
+                        error={isError}
+                    />
                 </div>
-                {leadsAtivos !== 0 && (
+                {leadsAtivos > 11 && !isError && (
                     <PaginacaoPage
                         pageAtual={pageAtual}
-                        pageMax={pageMax}
+                        pageMax={leadsAtivos}
                         onPageChange={setPageAtual}
                     />
                 )}
