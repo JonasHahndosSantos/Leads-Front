@@ -30,22 +30,30 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
 
     if (isEditing) {
         return (
-            <div className="relative flex w-48 flex items-center gap-2">
-                <Input
-                    value={localValue}
-                    onChange={(e) => setLocalValue(e.target.value)}
-                    className="pl-2 w-full"
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
-                     onClick={handleCancel}>
-                    <X className="h-4 w-4 text-red-500"/>
+            <>
+                <style jsx>{`
+                    ::selection {
+                        background: #dbeafe;
+                        color: #1f2937; 
+                    }
+                `}</style>
+                <div className="relative flex w-48 flex items-center gap-2 bg-white">
+                    <Input
+                        value={localValue}
+                        onChange={(e) => setLocalValue(e.target.value)}
+                        className="pl-2 w-full"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
+                         onClick={handleCancel}>
+                        <X className="h-4 w-4 text-red-500"/>
 
-                </div>
-                <div className="absolute inset-y-0 right-6 flex items-center pr-2 cursor-pointer" onClick={handleSave}>
-                    {localValue != parceiro && (<Check className="h-4 w-4 text-green-600"/>)}
+                    </div>
+                    <div className="absolute inset-y-0 right-6 flex items-center pr-2 cursor-pointer" onClick={handleSave}>
+                        {localValue != parceiro && (<Check className="h-4 w-4 text-green-600"/>)}
 
+                    </div>
                 </div>
-            </div>
+            </>
         );
     }
 

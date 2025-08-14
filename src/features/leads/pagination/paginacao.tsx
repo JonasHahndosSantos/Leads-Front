@@ -6,6 +6,7 @@ import {
     PaginationPrevious
 } from "@/components/ui/pagination";
 import React from "react";
+import {motion} from "framer-motion";
 
 interface LeadPageProps {
     pageAtual: number;
@@ -13,12 +14,15 @@ interface LeadPageProps {
     onPageChange: (page: number) => void;
 }
 
-export default function PaginacaoPage({pageAtual, pageMax , onPageChange}: LeadPageProps){
-    const numeroPage = Math.ceil(pageMax / 10) || 1;
+export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPageProps) {
+    const totalPages = Math.ceil(pageMax / 10) || 1;
+    const pagesRange = 2;
+
     const pageScroll = (page: number) => {
         onPageChange(page);
-        window.scrollTo(0,0)
-    }
+        window.scrollTo(0, 0);
+    };
+
     const handlePrevious = () => {
         if (pageAtual > 1) {
             pageScroll(pageAtual - 1);
@@ -26,71 +30,83 @@ export default function PaginacaoPage({pageAtual, pageMax , onPageChange}: LeadP
     };
 
     const handleNext = () => {
-        if (pageAtual < numeroPage) {
+        if (pageAtual < totalPages) {
             pageScroll(pageAtual + 1);
         }
     };
 
-    const pagesToShow = [];
-    if (numeroPage > 0) {
-        if (pageAtual > 1) {
-            pagesToShow.push(pageAtual - 1);
-        }
-        pagesToShow.push(pageAtual);
-        if (pageAtual < numeroPage) {
-            pagesToShow.push(pageAtual + 1);
+    const pages = [];
+    let startPage = Math.max(1, pageAtual - pagesRange);
+    let endPage = Math.min(totalPages, pageAtual + pagesRange);
+
+    if (endPage - startPage + 1 < (pagesRange * 2) + 1) {
+        if (startPage === 1) {
+            endPage = Math.min(totalPages, startPage + (pagesRange * 2));
+        } else if (endPage === totalPages) {
+            startPage = Math.max(1, endPage - (pagesRange * 2));
         }
     }
 
-    const showLeadingEllipsis = pageAtual > 2;
-    const showTrailingEllipsis = pageAtual < numeroPage - 1;
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
 
-
+    const disabledClasses = "opacity-50 cursor-not-allowed";
 
     return (
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious
-                        className={"cursor-pointer"}
-                        onClick={handlePrevious}
-                    />
+                    <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                        <PaginationPrevious
+                            className={`cursor-pointer ${pageAtual === 1 ? disabledClasses : "hover:bg-gray-100"}`}
+                            onClick={handlePrevious}
+                        />
+                    </motion.div>
                 </PaginationItem>
 
-                {numeroPage > 1 && pageAtual > 2 && (
+                {startPage > 1 && (
                     <PaginationItem>
-                        <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(1)}>
-                            1
-                        </PaginationLink>
+                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                            <PaginationLink className={"cursor-pointer hover:bg-gray-100"} onClick={() => pageScroll(1)}>
+                                1
+                            </PaginationLink>
+                        </motion.div>
                     </PaginationItem>
                 )}
-                {showLeadingEllipsis && <PaginationItem><PaginationEllipsis /></PaginationItem>}
+                {startPage > 2 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
 
-                {pagesToShow.map(page => (
+                {pages.map(page => (
                     <PaginationItem key={page}>
-                        <PaginationLink className={"cursor-pointer"}
-                            onClick={() => pageScroll(page)}
-                            isActive={page === pageAtual}
-                        >
-                            {page}
-                        </PaginationLink>
+                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                            <PaginationLink
+                                className={`cursor-pointer ${page === pageAtual ? "bg-gray-200 text-black hover:bg-gray-300" : "hover:bg-gray-100"}`}
+                                onClick={() => pageScroll(page)}
+                            >
+                                {page}
+                            </PaginationLink>
+                        </motion.div>
                     </PaginationItem>
                 ))}
 
-                {showTrailingEllipsis && <PaginationItem><PaginationEllipsis /></PaginationItem>}
-                {numeroPage > 1 && pageAtual < numeroPage - 1 && (
+                {endPage < totalPages - 1 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
+                {endPage < totalPages && (
                     <PaginationItem>
-                        <PaginationLink className={"cursor-pointer"} onClick={() => pageScroll(numeroPage)}>
-                            {numeroPage}
-                        </PaginationLink>
+                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                            <PaginationLink className={"cursor-pointer hover:bg-gray-100"} onClick={() => pageScroll(totalPages)}>
+                                {totalPages}
+                            </PaginationLink>
+                        </motion.div>
                     </PaginationItem>
                 )}
 
                 <PaginationItem>
-                    <PaginationNext
-                        className={"cursor-pointer"}
-                        onClick={handleNext}
-                    />
+                    <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                        <PaginationNext
+                            className={`cursor-pointer ${pageAtual === totalPages ? disabledClasses : "hover:bg-gray-100"}`}
+                            onClick={handleNext}
+                        />
+                    </motion.div>
                 </PaginationItem>
             </PaginationContent>
         </Pagination>

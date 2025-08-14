@@ -65,9 +65,9 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
         <motion.tr
             key={lead.id_leads_comercial}
             className={"hover:bg-gray-50"}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: delay }}
+            initial={{ opacity: 0}}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: delay }}
         >
             <TableCell className="py-4">
                 <div className="flex items-center gap-3">
@@ -116,7 +116,7 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
             )}
 
             {interesse.toLowerCase() !== "revenda" && (
-                <TableCell>
+                <TableCell className="max-w-[170px]">
                     {localInteresse === "revenda" ? (
                         <div className="relative flex-1 w-50 sm:max-w-xs flex items-center justify-center">
                             <span className="text-gray-400 font-bold text-lg">—</span>
@@ -161,8 +161,8 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
                     variant="ghost"
                     className={
                         statusButtonText === "Concluir"
-                            ? "bg-transparent hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer"
-                            : "bg-transparent hover:bg-orange-50 text-orange-400 hover:text-orange-500 cursor-pointer"
+                            ? "bg-transparent hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer max-w-[95]"
+                            : "bg-transparent hover:bg-orange-50 text-orange-400 hover:text-orange-500 cursor-pointer max-w-[95]"
                     }
                     onClick={StatusUpdate}
                     disabled={loading}>
