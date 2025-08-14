@@ -15,7 +15,7 @@ import FormatarData from "@/utils/formatar-data";
 import {getInitials, renderValue} from "@/utils/funcoes";
 import {cn} from "@/lib/utils";
 import {corFonteBg, corFonteText} from "@/features/leads/utils/efeitosCor";
-import { motion } from "framer-motion"; // <-- Importe o motion aqui
+import { motion } from "framer-motion";
 
 interface LeadItemProps {
     lead: LeadType;
@@ -65,8 +65,8 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
         <motion.tr
             key={lead.id_leads_comercial}
             className={"hover:bg-gray-50"}
-            initial={{ opacity: 0}}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, }}
+            animate={{ opacity: 1, }}
             transition={{ duration: 0.4, delay: delay }}
         >
             <TableCell className="py-4">
@@ -116,7 +116,7 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
             )}
 
             {interesse.toLowerCase() !== "revenda" && (
-                <TableCell className="max-w-[170px]">
+                <TableCell>
                     {localInteresse === "revenda" ? (
                         <div className="relative flex-1 w-50 sm:max-w-xs flex items-center justify-center">
                             <span className="text-gray-400 font-bold text-lg">—</span>
@@ -156,13 +156,13 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
                 {FormatarData(lead.data_hora)}
             </TableCell>
 
-            <TableCell>
+            <TableCell className="max-w-[120px]">
                 <Button
                     variant="ghost"
                     className={
                         statusButtonText === "Concluir"
-                            ? "bg-transparent hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer max-w-[95]"
-                            : "bg-transparent hover:bg-orange-50 text-orange-400 hover:text-orange-500 cursor-pointer max-w-[95]"
+                            ? "bg-transparent hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer"
+                            : "bg-transparent hover:bg-orange-50 text-orange-400 hover:text-orange-500 cursor-pointer"
                     }
                     onClick={StatusUpdate}
                     disabled={loading}>

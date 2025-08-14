@@ -5,7 +5,6 @@ import {Briefcase, CalendarDays, Handshake, Megaphone, MoreVertical, User, Zap} 
 import LeadItem from "@/features/leads/itens/lead-item";
 import {ListaVazia} from "@/components/sections/listas/lista-vazia";
 import {ListaErro} from "@/components/sections/listas/lista-erro";
-import { motion } from "framer-motion";
 
 interface LeadListProps {
     leads: LeadType[];
@@ -17,11 +16,13 @@ interface LeadListProps {
 export default function LeadList({leads, onLeadUpdated, interesse, error}: LeadListProps) {
 
     if(error) return (
-        <ListaErro descricao={"Erro inesperado. Tentando Recarregar..."}/>
+        <ListaErro descricao={"Erro inesperado. Tente recarregar a Pagina"}/>
     );
+
     if(leads.length === 0) return (
         <ListaVazia descricao={"Nenhum item encontrado. Tente ajustar os filtros"}/>
     );
+
     return (
         <Table>
             <TableHeader>
@@ -58,7 +59,7 @@ export default function LeadList({leads, onLeadUpdated, interesse, error}: LeadL
                     </TableHead>
                 </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className=" overflow-y-auto">
                 {leads.map((lead, index) => (
                     <LeadItem
                         key={lead.id_leads_comercial}

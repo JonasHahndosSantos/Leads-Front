@@ -74,7 +74,6 @@ export default function UseLeads({ status, interesse, fonte, page, limit=10, ref
             return () => clearInterval(intervalId);
         }
 
-
     }, [status, interesse, fonte, filterBusca, page, limit, refreshKey, pollingInterval]);
 
     return { leads, loading, isFetching, error };

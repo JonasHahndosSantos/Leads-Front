@@ -8,6 +8,7 @@ import {useLeadsCount} from "@/hooks/use-leads-count";
 import PaginacaoPage from "@/features/leads/pagination/paginacao";
 import LeadsFilter from "@/features/leads/filters/leads-filter";
 import {useLeadsFilters} from "@/features/leads/hooks/use-leads-filter";
+import { motion } from "framer-motion";
 
 export default function LeadsDashboard() {
     const {status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual,} = useLeadsFilters();
@@ -24,9 +25,11 @@ export default function LeadsDashboard() {
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
 
-    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, refreshKey, page: pageAtual, busca: debouncedBusca, pollingInterval: 5000});
-    const isError = !!(error);
-    if ((loading && leads.length === 0) || (loadingCount && leadsCount === null)) {
+    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, page: pageAtual, busca: debouncedBusca, refreshKey });
+
+    const isError = !!error || !!errorCount;
+
+    if ((loading && leads?.length === 0) || (loadingCount && leadsCount === null)) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-500 p-8">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-400 mb-4" />
@@ -48,24 +51,32 @@ export default function LeadsDashboard() {
                 <StatCard title={countUtilizacao} value={leadsUtilizacao} icon={<CalendarDays className="h-6 w-6"/>}/>
             </section>
 
-                <LeadsFilter
-                    status={status}
-                    onStatusChange={handleStatus}
-                    busca={busca}
-                    onBuscaChange={(e) => setBusca(e.target.value)}
-                    fonte={fonte}
-                    onFonteChange={handleFonte}
-                    interesse={interesse}
-                    onInteresseChange={handleInteresse}/>
+            <LeadsFilter
+                status={status}
+                onStatusChange={handleStatus}
+                busca={busca}
+                onBuscaChange={(e) => setBusca(e.target.value)}
+                fonte={fonte}
+                onFonteChange={handleFonte}
+                interesse={interesse}
+                onInteresseChange={handleInteresse}/>
 
             <section className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{leadsAtivos} {statusValue}</h3>
+
+                    <motion.div
+                        key={leadsAtivos}
+                        initial={{ opacity: 0, scale: 1 }}
+                        animate={{ opacity: 0.8, scale: 1 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <h3 className="text-lg font-semibold text-gray-900">{leadsAtivos} {statusValue}</h3>
+                    </motion.div>
                     <p className="text-sm text-gray-600">{textStatus}</p>
                 </div>
                 <div style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}>
                     <LeadList
-                        leads={leads}
+                        leads={leads || []}
                         onLeadUpdated={handleLeadUpdated}
                         interesse={interesse}
                         error={isError}
@@ -78,7 +89,6 @@ export default function LeadsDashboard() {
                         onPageChange={setPageAtual}
                     />
                 )}
-
             </section>
         </div>
     );

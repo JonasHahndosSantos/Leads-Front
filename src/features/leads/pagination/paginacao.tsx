@@ -80,7 +80,7 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                     <PaginationItem key={page}>
                         <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
                             <PaginationLink
-                                className={`cursor-pointer ${page === pageAtual ? "bg-gray-200 text-black hover:bg-gray-300" : "hover:bg-gray-100"}`}
+                                className={`cursor-pointer ${page === pageAtual ? "bg-gray-100 text-black hover:bg-gray-300" : "hover:bg-gray-100"}`}
                                 onClick={() => pageScroll(page)}
                             >
                                 {page}
