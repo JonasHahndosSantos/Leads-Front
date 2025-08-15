@@ -22,21 +22,25 @@ interface LeadItemProps {
     onLeadUpdated: () => void;
     interesse: string;
     delay: number;
+    loadingitens: boolean;
 }
 
-export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadItemProps) {
-
+export default function LeadItem({lead, onLeadUpdated, interesse, delay, loadingitens}: LeadItemProps) {
     const [localInteresse, setLocalInteresse] = useState(lead.interesse);
-    const {updateLead, loading, error, data, resetData} = useUpdateLeads();
+    const {updateLead, loading, error, data, resetData} = useUpdateLeads(onLeadUpdated);
     const [localLeadStatus, setLocalLeadStatus] = useState(lead.status);
     const interessePrincipal = lead.interesse?.toLowerCase() || 'utilização';
     const statusButtonText = localLeadStatus === "pendente" ? "Concluir" : "Voltar para Ativo";
     const interesseText = localInteresse === "revenda" ? "Revenda" : "Utilização";
     const parceiroValidator = lead.parceiros === null ? " " : lead.parceiros;
+    const emailExibido = lead.email && lead.email.length > 35
+        ? `${lead.email.slice(0, 35)}...`
+        : lead.email;
+
     const parceiroSave = async (novoValor: string) => {
         if (novoValor !== lead.parceiros) {
             const updatedLead = {...lead, parceiros: novoValor};
-            await updateLead(updatedLead);
+            await updateLead(updatedLead, lead);
         }
     };
 
@@ -51,20 +55,26 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
         const newStatus = localLeadStatus === "pendente" ? "concluido" : "pendente";
         const leadToUpdate = {...lead, status: newStatus};
 
-        await updateLead(leadToUpdate);
+        await updateLead(leadToUpdate, lead);
         setLocalLeadStatus(newStatus);
     };
 
     const handleInteresseUpdate = async (novoInteresse: string) => {
         const leadToUpdate = {...lead, interesse: novoInteresse};
 
-        await updateLead(leadToUpdate);
+        await updateLead(leadToUpdate, lead);
         setLocalInteresse(novoInteresse)
     };
+
     return (
         <motion.tr
             key={lead.id_leads_comercial}
-            className={"hover:bg-gray-50"}
+            className={cn(
+                "hover:bg-gray-50",
+                {
+                    "opacity-50 animate-pulse pointer-events-none": loadingitens
+                }
+            )}
             initial={{ opacity: 0, }}
             animate={{ opacity: 1, }}
             transition={{ duration: 0.4, delay: delay }}
@@ -87,7 +97,7 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay}: LeadIt
                         </div>
 
                         <div className="flex items-center text-sm text-gray-600 max-w-55">
-                            {renderValue(lead.email, "font-medium text-gray-600")}
+                            {renderValue(emailExibido, "font-medium text-gray-600")}
                             <CopyDados item={lead.email}/>
                         </div>
 

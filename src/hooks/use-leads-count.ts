@@ -25,14 +25,11 @@ export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: u
   const filterFonte = fonte === 'all' ? null : fonte;
 
   useEffect(() => {
-    const delay = setTimeout(async () => {
-      if (isInitialMount.current) {
         setLoading(true);
-      } else {
-        setIsFetching(true);
-      }
+
       setError(null);
 
+    const fetchData = async () => {
       try {
         const result = await getLeadsCount({ status, interesse: filterInteresse, fonte: filterFonte, busca: busca });
         setData(result);
@@ -40,13 +37,11 @@ export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: u
         setError(err.message);
       } finally {
         setLoading(false);
-        setIsFetching(false);
       }
-    }, 200);
+    };
 
-    isInitialMount.current = false;
+    fetchData();
 
-    return () => clearTimeout(delay);
   }, [status, interesse, fonte, busca, refreshKey]);
 
   return { data, loading, error };

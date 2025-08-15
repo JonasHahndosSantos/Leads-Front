@@ -1,5 +1,5 @@
 'use client';
-import React from "react"
+import React, { useState, useEffect } from "react"
 import {Users, Clock, CalendarDays, Loader2,} from "lucide-react"
 import LeadList from "@/features/leads/listas/lead-list";
 import {StatCard} from "@/components/ui/cards/start-card";
@@ -9,11 +9,16 @@ import PaginacaoPage from "@/features/leads/pagination/paginacao";
 import LeadsFilter from "@/features/leads/filters/leads-filter";
 import {useLeadsFilters} from "@/features/leads/hooks/use-leads-filter";
 import { motion } from "framer-motion";
+import {ListaError} from "@/components/sections/listas/lista-erro";
+
+const POLLING_INTERVAL = parseInt(process.env.NEXT_PUBLIC_POLLING_INTERVAL || "10000");
 
 export default function LeadsDashboard() {
     const {status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual,} = useLeadsFilters();
 
     const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount({status, interesse, fonte, busca: debouncedBusca, refreshKey});
+
+    const [currentPollingInterval, setCurrentPollingInterval] = useState(POLLING_INTERVAL);
 
     const statusValue = status === "pendente" ? "Leads ativos" : "Leads Concluídos"
     const textStatus = status === "pendente" ? "Todos os leads Ativos" : "Todos os leads Concluídos"
@@ -25,18 +30,20 @@ export default function LeadsDashboard() {
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
 
-    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, page: pageAtual, busca: debouncedBusca, refreshKey });
+    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, page: pageAtual, busca: debouncedBusca, refreshKey, pollingInterval: currentPollingInterval });
 
     const isError = !!error || !!errorCount;
 
-    if ((loading && leads?.length === 0) || (loadingCount && leadsCount === null)) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-500 p-8">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-400 mb-4" />
-                <p className="text-lg font-medium">Carregando leads...</p>
-            </div>
-        );
-    }
+    useEffect(() => {
+        if (isError) {
+            setCurrentPollingInterval(0);
+        }
+    }, [isError]);
+
+    const handleRetry = () => {
+        setCurrentPollingInterval(POLLING_INTERVAL);
+        handleLeadUpdated();
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
@@ -46,9 +53,9 @@ export default function LeadsDashboard() {
             </header>
 
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-5">
-                <StatCard title={countAtivo} value={leadsAtivos} icon={<Users className="h-6 w-6"/>}/>
-                <StatCard title={countRevenda} value={leadsRevenda} icon={<Clock className="h-6 w-6"/>}/>
-                <StatCard title={countUtilizacao} value={leadsUtilizacao} icon={<CalendarDays className="h-6 w-6"/>}/>
+                <StatCard title={countAtivo} value={leadsAtivos} icon={<Users className="h-6 w-6"/>} loading={loadingCount}/>
+                <StatCard title={countRevenda} value={leadsRevenda} icon={<Clock className="h-6 w-6"/>} loading={loadingCount}/>
+                <StatCard title={countUtilizacao} value={leadsUtilizacao} icon={<CalendarDays className="h-6 w-6"/>} loading={loadingCount}/>
             </section>
 
             <LeadsFilter
@@ -74,20 +81,28 @@ export default function LeadsDashboard() {
                     </motion.div>
                     <p className="text-sm text-gray-600">{textStatus}</p>
                 </div>
-                <div style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}>
-                    <LeadList
-                        leads={leads || []}
-                        onLeadUpdated={handleLeadUpdated}
-                        interesse={interesse}
-                        error={isError}
-                    />
-                </div>
-                {leadsAtivos > 11 && !isError && (
-                    <PaginacaoPage
-                        pageAtual={pageAtual}
-                        pageMax={leadsAtivos}
-                        onPageChange={setPageAtual}
-                    />
+                {isError ? (
+                    <div className="flex w-full items-center justify-center min-h-[170px]">
+                        <ListaError handleRetry={handleRetry} />
+                    </div>
+                ) : (
+                    <>
+                        <div>
+                            <LeadList
+                                leads={leads || []}
+                                onLeadUpdated={handleLeadUpdated}
+                                interesse={interesse}
+                                loading={loading || isFetching}
+                            />
+                        </div>
+                        {leadsAtivos > 11 && !isError && (
+                            <PaginacaoPage
+                                pageAtual={pageAtual}
+                                pageMax={leadsAtivos}
+                                onPageChange={setPageAtual}
+                            />
+                        )}
+                    </>
                 )}
             </section>
         </div>

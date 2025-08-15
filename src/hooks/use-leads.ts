@@ -1,6 +1,6 @@
-import {useState, useEffect, useRef} from 'react';
-import { getLeads } from "@/services/leads/get-leads";
-import { LeadType } from "@/features/leads/schemas/lead-schema";
+import {useEffect, useRef, useState} from 'react';
+import {getLeads} from "@/services/leads/get-leads";
+import {LeadType} from "@/features/leads/schemas/lead-schema";
 
 interface UseLeadsProps {
     status?: string;
@@ -13,11 +13,15 @@ interface UseLeadsProps {
     pollingInterval?: number;
 }
 
-export default function UseLeads({ status, interesse, fonte, page, limit=10, refreshKey, busca, pollingInterval = 0 }: UseLeadsProps) {
+export default function UseLeads({ status, interesse, fonte, page, refreshKey, busca, pollingInterval = 0 }: UseLeadsProps) {
     const [leads, setLeads] = useState<LeadType[]>([]);
     const [loading, setLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const limit = parseInt(
+        process.env.NEXT_PUBLIC_LIMIT_ITENS_POR_PAGE || "10",
+        10
+    )
 
     const isInitialMount = useRef(true);
 
