@@ -70,15 +70,18 @@ export default function LeadsDashboard() {
 
             <section className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="mb-3">
+                    <div className="flex">
+                        <motion.div
+                            key={leadsAtivos}
+                            initial={{ opacity: 0}}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            <h3 className="text-lg font-semibold text-gray-900 ">{leadsAtivos}</h3>
+                        </motion.div>
+                        <h3 className="text-lg font-semibold text-gray-900 pl-3">{statusValue}</h3>
+                    </div>
 
-                    <motion.div
-                        key={leadsAtivos}
-                        initial={{ opacity: 0, scale: 1 }}
-                        animate={{ opacity: 0.8, scale: 1 }}
-                        transition={{ duration: 0.4 }}
-                    >
-                        <h3 className="text-lg font-semibold text-gray-900">{leadsAtivos} {statusValue}</h3>
-                    </motion.div>
                     <p className="text-sm text-gray-600">{textStatus}</p>
                 </div>
                 {isError ? (

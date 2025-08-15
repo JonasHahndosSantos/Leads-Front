@@ -1,21 +1,19 @@
 "use client";
-import { TableCell} from "@/components/ui/table";
-import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {TableCell} from "@/components/ui/table";
 import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {CheckCircle, ChevronDown, RotateCcw} from "lucide-react";
+import {ChevronDown} from "lucide-react";
 import type {LeadType} from "@/features/leads/schemas/lead-schema";
 import React, {useEffect, useState} from "react";
 import FilterDropdown from "@/components/ui/dropdown/filter-dropdown";
-import CopyDados from "@/features/leads/components/copy-dados";
 import {useUpdateLeads} from "@/hooks/use-lead-update";
-import {formatarCNPJ} from "@/utils/formatar-cnpj";
 import Parceiros from "@/features/leads/components/parceiros";
 import FormatarData from "@/utils/formatar-data";
-import {getInitials, renderValue} from "@/utils/funcoes";
+import { renderValue} from "@/utils/funcoes";
 import {cn} from "@/lib/utils";
 import {corFonteBg, corFonteText} from "@/features/leads/utils/efeitosCor";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
+import {StatusButton} from "@/features/leads/components/status-button";
+import {LeadInfoItem} from "@/features/leads/components/info-text-item";
 
 interface LeadItemProps {
     lead: LeadType;
@@ -27,15 +25,11 @@ interface LeadItemProps {
 
 export default function LeadItem({lead, onLeadUpdated, interesse, delay, loadingitens}: LeadItemProps) {
     const [localInteresse, setLocalInteresse] = useState(lead.interesse);
-    const {updateLead, loading, error, data, resetData} = useUpdateLeads(onLeadUpdated);
+    const {updateLead, loading,} = useUpdateLeads(onLeadUpdated);
     const [localLeadStatus, setLocalLeadStatus] = useState(lead.status);
     const interessePrincipal = lead.interesse?.toLowerCase() || 'utilização';
-    const statusButtonText = localLeadStatus === "pendente" ? "Concluir" : "Voltar para Ativo";
     const interesseText = localInteresse === "revenda" ? "Revenda" : "Utilização";
     const parceiroValidator = lead.parceiros === null ? " " : lead.parceiros;
-    const emailExibido = lead.email && lead.email.length > 35
-        ? `${lead.email.slice(0, 35)}...`
-        : lead.email;
 
     const parceiroSave = async (novoValor: string) => {
         if (novoValor !== lead.parceiros) {
@@ -43,13 +37,6 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay, loading
             await updateLead(updatedLead, lead);
         }
     };
-
-    useEffect(() => {
-        if (data) {
-            onLeadUpdated();
-            resetData();
-        }
-    }, [data, onLeadUpdated, resetData]);
 
     const StatusUpdate = async () => {
         const newStatus = localLeadStatus === "pendente" ? "concluido" : "pendente";
@@ -75,41 +62,15 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay, loading
                     "opacity-50 animate-pulse pointer-events-none": loadingitens
                 }
             )}
-            initial={{ opacity: 0, }}
-            animate={{ opacity: 1, }}
-            transition={{ duration: 0.4, delay: delay }}
+            initial={{opacity: 0,}}
+            animate={{opacity: 1,}}
+            transition={{duration: 0.4, delay: delay}}
         >
             <TableCell className="py-4">
-                <div className="flex items-center gap-3">
-                    {lead.nome ? (
-                        <Avatar className={"h-9 w-9 font-semibold border-0"}>
-                            <AvatarFallback className="bg-blue-500 text-white">{getInitials(lead.nome)}</AvatarFallback>
-                        </Avatar>
-                    ) : (
-                        <Avatar className={"invisible h-9 w-9"}>
-                        </Avatar>
-                    )}
-
-                    <div className={"min-w-[150px] max-w-[200px]"}>
-                        <div className="flex font-medium text-gray-900 ">
-                            {renderValue(lead.nome, "font-medium text-gray-900")}
-                            {lead.nome && <CopyDados item={lead.nome}/>}
-                        </div>
-
-                        <div className="flex items-center text-sm text-gray-600 max-w-55">
-                            {renderValue(emailExibido, "font-medium text-gray-600")}
-                            <CopyDados item={lead.email}/>
-                        </div>
-
-                        <div className="flex items-center text-sm text-gray-600">
-                            {renderValue(formatarCNPJ(lead.cnpj))}
-                            <CopyDados item={lead.cnpj}/>
-                        </div>
-                    </div>
-                </div>
+                <LeadInfoItem lead={lead}/>
             </TableCell>
             <TableCell>
-                <Badge className={`h-6 font-normal ${corFonteBg(lead.fonte)}`  }>
+                <Badge className={`h-6 font-normal ${corFonteBg(lead.fonte)}`}>
                     {renderValue(lead.fonte, cn("text-sm font-semibold", corFonteText(lead.fonte)))}
                 </Badge>
             </TableCell>
@@ -167,22 +128,11 @@ export default function LeadItem({lead, onLeadUpdated, interesse, delay, loading
             </TableCell>
 
             <TableCell className="max-w-[120px]">
-                <Button
-                    variant="ghost"
-                    className={
-                        statusButtonText === "Concluir"
-                            ? "bg-transparent hover:bg-blue-50 text-blue-500 hover:text-blue-600 cursor-pointer"
-                            : "bg-transparent hover:bg-orange-50 text-orange-400 hover:text-orange-500 cursor-pointer"
-                    }
-                    onClick={StatusUpdate}
-                    disabled={loading}>
-                    {statusButtonText === "Concluir" ? (
-                        <CheckCircle className="w-5 h-5"/>
-                    ) : (
-                        <RotateCcw className="w-5 h-5"/>
-                    )}
-                    {loading ? "Aguardar..." : statusButtonText}
-                </Button>
+                <StatusButton
+                    status={localLeadStatus}
+                    isLoading={loading}
+                    onUpdate={StatusUpdate}
+                />
             </TableCell>
         </motion.tr>
     );
