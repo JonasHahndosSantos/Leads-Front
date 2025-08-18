@@ -45,7 +45,7 @@ export default function FilterDropdown({ label, items, onSelect, customTrigger, 
                     <DropdownMenuItem
                         key={item.value}
                         onClick={() => onSelect?.(item.value)}
-                        className={`flex justify-between items-center ${item.value === value ? " bg-gray-100" : ""}`}
+                        className={`flex justify-between items-center ${item.value === value ? " bg-gray-100 dark:bg-slate-600" : ""}`}
                     >
                         <span>{item.label}</span>
                         {item.value === value && (

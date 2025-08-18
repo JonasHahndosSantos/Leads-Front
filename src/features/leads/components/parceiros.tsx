@@ -37,7 +37,7 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
                         color: #1f2937; 
                     }
                 `}</style>
-                <div className="relative flex w-48 flex items-center gap-2 bg-white">
+                <div className="relative flex w-48 flex items-center gap-2 bg-white dark:text-gray-100 dark:bg-slate-700">
                     <Input
                         value={localValue}
                         onChange={(e) => setLocalValue(e.target.value)}
@@ -64,10 +64,10 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
             className="flex items-center gap-2 cursor-pointer pl-12"
             onClick={handleEdit}
         >
-            <div className={`text-sm ${parceiro ? "text-gray-700" : "text-gray-400 italic "}`}>
+            <div className={`text-sm ${parceiro ? "text-gray-700 dark:text-gray-100" : "text-gray-400 italic dark:text-gray-100 "}`}>
                 {displayValue}
             </div>
-            <Pencil className="h-4 w-4 text-gray-600 hover:text-orange-900" />
+            <Pencil className="h-4 w-4 text-gray-600 hover:text-orange-500 dark:text-gray-100 dark:hover:text-orange-500" />
         </div>
     );
 }

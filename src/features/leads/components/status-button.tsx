@@ -8,7 +8,7 @@ interface StatusButtonProps {
 }
 
 export function StatusButton({ status, isLoading, onUpdate }: StatusButtonProps) {
-    const isPendente = status === "pendente" ? "pendente" : "concluido";
+    const isPendente = status.toLowerCase() === "pendente";
     const text = isPendente ? "Concluir" : "Voltar para Ativo";
 
     const buttonClasses = isPendente
@@ -18,7 +18,7 @@ export function StatusButton({ status, isLoading, onUpdate }: StatusButtonProps)
     return (
         <Button
             variant="ghost"
-            className={`${buttonClasses} cursor-pointer max-w-[100px]`}
+            className={`${buttonClasses} cursor-pointer max-w-[100px] dark:hover:bg-transparent`}
             onClick={onUpdate}
             disabled={isLoading}
         >

@@ -16,26 +16,26 @@ export function LeadInfoItem({ lead }: LeadInfoCellProps) {
     return (
         <div className="flex items-center gap-3">
             {lead.nome ? (
-                <Avatar className="h-9 w-9 font-semibold border-0">
-                    <AvatarFallback className="bg-blue-500 text-white">{getInitials(lead.nome)}</AvatarFallback>
+                <Avatar className="h-9 w-9 font-semibold border-0 ">
+                    <AvatarFallback className="bg-primary text-primary-foreground ">{getInitials(lead.nome)}</AvatarFallback>
                 </Avatar>
             ) : (
                 <Avatar className="invisible h-9 w-9" />
             )}
 
             <div className="min-w-[150px] max-w-[200px]">
-                <div className="flex font-medium text-gray-900">
-                    {renderValue(lead.nome, "font-medium text-gray-900")}
+                <div className="flex items-center">
+                    {renderValue(lead.nome, "font-medium text-foreground")}
                     {lead.nome && <CopyDados item={lead.nome} />}
                 </div>
 
-                <div className="flex items-center text-sm text-gray-600">
-                    {renderValue(emailExibido, "font-medium text-gray-600")}
+                <div className="flex items-center text-sm">
+                    {renderValue(emailExibido, "text-muted-foreground")}
                     {lead.email && <CopyDados item={lead.email} />}
                 </div>
 
-                <div className="flex items-center text-sm text-gray-600">
-                    {renderValue(formatarCNPJ(lead.cnpj))}
+                <div className="flex items-center text-sm">
+                    {renderValue(formatarCNPJ(lead.cnpj), "text-muted-foreground")}
                     {lead.cnpj && <CopyDados item={lead.cnpj} />}
                 </div>
             </div>

@@ -6,7 +6,8 @@ import {
     PaginationPrevious
 } from "@/components/ui/pagination";
 import React from "react";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface LeadPageProps {
     pageAtual: number;
@@ -14,7 +15,7 @@ interface LeadPageProps {
     onPageChange: (page: number) => void;
 }
 
-export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPageProps) {
+export default function PaginacaoPage({ pageAtual, pageMax, onPageChange }: LeadPageProps) {
     const totalPages = Math.ceil(pageMax / 10) || 1;
     const pagesRange = 2;
 
@@ -57,9 +58,9 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <PaginationPrevious
-                            className={`cursor-pointer ${pageAtual === 1 ? disabledClasses : "hover:bg-gray-100"}`}
+                            className={cn("cursor-pointer hover:bg-muted", pageAtual === 1 && disabledClasses)}
                             onClick={handlePrevious}
                         />
                     </motion.div>
@@ -67,20 +68,25 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
 
                 {startPage > 1 && (
                     <PaginationItem>
-                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
-                            <PaginationLink className={"cursor-pointer hover:bg-gray-100"} onClick={() => pageScroll(1)}>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <PaginationLink className="cursor-pointer hover:bg-muted" onClick={() => pageScroll(1)}>
                                 1
                             </PaginationLink>
                         </motion.div>
                     </PaginationItem>
                 )}
-                {startPage > 2 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
+                {startPage > 2 && <PaginationItem><PaginationEllipsis /></PaginationItem>}
 
                 {pages.map(page => (
                     <PaginationItem key={page}>
-                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                             <PaginationLink
-                                className={`cursor-pointer ${page === pageAtual ? "bg-gray-100 text-black hover:bg-gray-300" : "hover:bg-gray-100"}`}
+                                className={cn(
+                                    "cursor-pointer",
+                                    page === pageAtual
+                                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                        : "hover:bg-muted"
+                                )}
                                 onClick={() => pageScroll(page)}
                             >
                                 {page}
@@ -89,11 +95,11 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                     </PaginationItem>
                 ))}
 
-                {endPage < totalPages - 1 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
+                {endPage < totalPages - 1 && <PaginationItem><PaginationEllipsis /></PaginationItem>}
                 {endPage < totalPages && (
                     <PaginationItem>
-                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
-                            <PaginationLink className={"cursor-pointer hover:bg-gray-100"} onClick={() => pageScroll(totalPages)}>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <PaginationLink className="cursor-pointer hover:bg-muted" onClick={() => pageScroll(totalPages)}>
                                 {totalPages}
                             </PaginationLink>
                         </motion.div>
@@ -101,9 +107,9 @@ export default function PaginacaoPage({pageAtual, pageMax, onPageChange}: LeadPa
                 )}
 
                 <PaginationItem>
-                    <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <PaginationNext
-                            className={`cursor-pointer ${pageAtual === totalPages ? disabledClasses : "hover:bg-gray-100"}`}
+                            className={cn("cursor-pointer hover:bg-muted", pageAtual === totalPages && disabledClasses)}
                             onClick={handleNext}
                         />
                     </motion.div>

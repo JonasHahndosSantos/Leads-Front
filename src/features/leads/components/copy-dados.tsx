@@ -17,7 +17,7 @@ export default function CopyDados({ item }: CopyDadosProps) {
     };
     return(
         <div
-            className="h-4 w-4 ml-1 cursor-pointer text-gray-600 pl-2"
+            className="h-4 w-4 ml-1 cursor-pointer text-gray-600 dark:text-gray-100 pl-2"
             onClick={() => handleCopy(item)}
         >
             {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}

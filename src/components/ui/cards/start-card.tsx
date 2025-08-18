@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 
 interface StatCardProps {
     title: string;
@@ -42,11 +41,11 @@ export function StatCard({ title, value, icon, loading = true }: StatCardProps) 
     };
 
     return (
-        <Card className="flex-1 min-w-[280px] shadow-sm">
+        <Card className="flex-1 min-w-[280px] shadow-sm bg-card">
             <CardContent className="p-6 flex items-center justify-between">
                 <div>
-                    <p className="text-sm text-gray-500">{title}</p>
-                    <h2 className="text-4xl font-bold text-gray-900 mt-1">
+                    <p className="text-sm text-muted-foreground">{title}</p>
+                    <h2 className="text-4xl font-bold text-card-foreground mt-1">
                         {loading && showLoadingAnimation ? (
                             <motion.div
                                 animate={{
@@ -57,7 +56,7 @@ export function StatCard({ title, value, icon, loading = true }: StatCardProps) 
                                         repeatType: "loop",
                                     },
                                 }}
-                                className="h-7 w-20 bg-gray-200 rounded-md"
+                                className="h-7 w-20 bg-muted rounded-md"
                             />
                         ) : (
                             <motion.span
@@ -73,7 +72,9 @@ export function StatCard({ title, value, icon, loading = true }: StatCardProps) 
                         )}
                     </h2>
                 </div>
-                <div className="p-3 rounded-lg bg-purple-100 text-purple-500">{icon}</div>
+                <div className="p-3 rounded-lg bg-muted text-primary">
+                    {icon}
+                </div>
             </CardContent>
         </Card>
     );
