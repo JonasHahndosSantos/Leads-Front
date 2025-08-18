@@ -1,15 +1,23 @@
-import {useState, useEffect, useRef} from 'react';
-import {getLeadsCount, LeadsCountType} from "@/services/leads/get-leads-count";
+import { useState, useEffect } from 'react';
+import { getLeadsCount, LeadsCountType } from "@/services/leads/get-leads-count";
+
+export interface LeadsCountType {
+  total_ativos: number;
+  total_revendas: number;
+  total_utilizacao: number;
+  count_pagin: number;
+}
 
 interface UseLeadsCountResult {
   data: LeadsCountType | null;
   loading: boolean;
   error: string | null;
 }
-interface useGet{
+
+interface useGet {
   status: string;
-  interesse?: string;
-  fonte?: string;
+  interesse?: string | null;
+  fonte?: string | null;
   busca?: string;
   refreshKey: number;
 }
@@ -17,24 +25,20 @@ interface useGet{
 export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: useGet): UseLeadsCountResult {
   const [data, setData] = useState<LeadsCountType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isInitialMount = useRef(true);
   const filterInteresse = interesse === 'all' ? null : interesse;
   const filterFonte = fonte === 'all' ? null : fonte;
 
   useEffect(() => {
-        setLoading(true);
-
-      setError(null);
-
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const result = await getLeadsCount({ status, interesse: filterInteresse, fonte: filterFonte, busca: busca });
+        const result = await getLeadsCount({ status, interesse: filterInteresse, fonte: filterFonte, busca });
         setData(result);
       } catch (err: any) {
-        setError(err.message);
+        setError("Não foi possível carregar os contadores.");
       } finally {
         setLoading(false);
       }
@@ -42,7 +46,7 @@ export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: u
 
     fetchData();
 
-  }, [status, interesse, fonte, busca, refreshKey]);
+  }, [status, filterInteresse, filterFonte, busca, refreshKey]);
 
   return { data, loading, error };
 }

@@ -1,5 +1,3 @@
-// Em: hooks/use-lead-update.ts
-
 import { useState } from "react";
 import { putLeads } from "@/services/leads/put-leads";
 import { LeadType } from "@/features/leads/schemas/lead-schema";
@@ -10,7 +8,7 @@ export function useUpdateLeads(onSuccessCallback: () => void) {
     const [error, setError] = useState<string | null>(null);
     const [data, setData] = useState<LeadType | null>(null);
 
-    const { showUndo } = useUndo();
+    const { registerUndoAction } = useUndo();
 
     const updateLead = async (
         leadsUpdate: LeadType,
@@ -36,7 +34,7 @@ export function useUpdateLeads(onSuccessCallback: () => void) {
                 }
             };
 
-            showUndo(undoAction);
+            registerUndoAction(undoAction);
 
         } catch (err) {
             setError("Erro ao atualizar o lead. Por favor, tente novamente.");

@@ -1,55 +1,60 @@
-'use client'
+'use client';
 import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
 
 type UndoableAction = () => Promise<any>;
 
 interface UndoContextType {
-    isVisible: boolean;
-    showUndo: (action: UndoableAction) => void;
-    hideUndo: () => void;
+    registerUndoAction: (action: UndoableAction) => void;
     executeUndo: () => void;
+    canUndo: boolean;
+    isToastVisible: boolean;
 }
 
 const UndoContext = createContext<UndoContextType | undefined>(undefined);
 
 export const UndoProvider = ({ children }: { children: ReactNode }) => {
     const [undoAction, setUndoAction] = useState<UndoableAction | null>(null);
-    const [isVisible, setIsVisible] = useState(false);
+    const [isToastVisible, setIsToastVisible] = useState(false);
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
-    const hideUndo = useCallback(() => {
-        setIsVisible(false);
+    const dismissToast = useCallback(() => {
+        setIsToastVisible(false);
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
-        setUndoAction(null);
     }, [timeoutId]);
 
-    const showUndo = useCallback((action: UndoableAction) => {
+    const registerUndoAction = useCallback((action: UndoableAction) => {
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
-
         setUndoAction(() => action);
-        setIsVisible(true);
+        setIsToastVisible(true);
 
-        const newTimeoutId = setTimeout(hideUndo, 7000);
+        const newTimeoutId = setTimeout(dismissToast, 5000);
         setTimeoutId(newTimeoutId);
-    }, [hideUndo, timeoutId]);
+    }, [dismissToast, timeoutId]);
 
     const executeUndo = async () => {
         if (undoAction) {
             await undoAction();
-            hideUndo();
+            setUndoAction(null);
+            setIsToastVisible(false);
         }
     };
 
     return (
-        <UndoContext.Provider value={{ isVisible, showUndo, hideUndo, executeUndo }}>
+        <UndoContext.Provider value={{
+            registerUndoAction,
+            executeUndo,
+            canUndo: !!undoAction,
+            isToastVisible
+        }}>
             {children}
         </UndoContext.Provider>
     );
 };
+
 export const useUndo = () => {
     const context = useContext(UndoContext);
     if (!context) {

@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Undo2 } from 'lucide-react';
 
 export default function DesfazerButton() {
-    const { isVisible, executeUndo } = useUndo();
+    const { isToastVisible, executeUndo, canUndo } = useUndo();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             const isUndoShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z';
 
-            if (isUndoShortcut && isVisible) {
+            if (isUndoShortcut && canUndo) {
                 event.preventDefault();
                 executeUndo();
             }
@@ -23,11 +23,11 @@ export default function DesfazerButton() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isVisible, executeUndo]);
+    }, [canUndo, executeUndo]);
 
     return (
         <AnimatePresence>
-            {isVisible && (
+            {isToastVisible && (
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export default function DesfazerButton() {
                         className="font-bold uppercase text-primary hover:text-primary/90 transition-colors"
                     >
                         Desfazer
-                        <Undo2 className="h-4 w-4 mr-2"/>
+                        <Undo2 className="h-4 w-4 ml-2"/>
                     </Button>
                 </motion.div>
             )}

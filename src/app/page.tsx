@@ -10,6 +10,7 @@ import LeadsFilter from "@/features/leads/filters/leads-filter";
 import { useLeadsFilters } from "@/features/leads/hooks/use-leads-filter";
 import { ListaError } from "@/components/sections/listas/lista-erro";
 import {DarkButton} from "@/components/ui/button/button-darkmode";
+import { motion } from "framer-motion";
 
 const POLLING_INTERVAL = parseInt(process.env.NEXT_PUBLIC_POLLING_INTERVAL || "10000");
 
@@ -25,6 +26,7 @@ export default function LeadsDashboard() {
     const leadsAtivos = leadsCount?.total_ativos ?? 0;
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
+    const countLeadsPagination = leadsCount?.count_pagin ?? 0;
 
     const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, page: pageAtual, busca: debouncedBusca, refreshKey, pollingInterval: currentPollingInterval });
     const isError = !!error || !!errorCount;
@@ -67,6 +69,22 @@ export default function LeadsDashboard() {
                 onInteresseChange={handleInteresse} />
 
             <section className="bg-card text-card-foreground  rounded-lg shadow-sm">
+                <div
+                    className="flex items-baseline gap-2 pl-4 pt-3"
+                >
+                    <h3 className="text-lg font-semibold text-foreground">
+                        <motion.span
+                            key={countLeadsPagination}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1}}
+                            transition={{ duration: 0.4 }}
+                            className="inline-block"
+                        >
+                            {countLeadsPagination}
+                        </motion.span>
+                    </h3>
+                    <h4 className="text-sm text-muted-foreground">Leads pelo filtro</h4>
+                </div>
 
                 {isError ? (
                     <div className="flex w-full items-center justify-center min-h-[170px]">
@@ -82,10 +100,10 @@ export default function LeadsDashboard() {
                                 loading={loading || isFetching}
                             />
                         </div>
-                        {leadsAtivos > 11 && !isError && (
+                        {countLeadsPagination > 11 && !isError && (
                             <PaginacaoPage
                                 pageAtual={pageAtual}
-                                pageMax={leadsAtivos}
+                                pageMax={countLeadsPagination}
                                 onPageChange={setPageAtual}
                             />
                         )}
