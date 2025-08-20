@@ -1,34 +1,45 @@
 'use client';
-import React, { useState, useEffect } from "react";
-import { Users, Clock, CalendarDays, } from "lucide-react";
+import React, {useState, useEffect} from "react";
+import {Users, Clock, CalendarDays,} from "lucide-react";
 import LeadList from "@/features/leads/listas/lead-list";
-import { StatCard } from "@/components/ui/cards/start-card";
+import {StatCard} from "@/components/ui/cards/start-card";
 import UseLeads from "@/hooks/use-leads";
-import { useLeadsCount } from "@/hooks/use-leads-count";
+import {useLeadsCount} from "@/hooks/use-leads-count";
 import PaginacaoPage from "@/features/leads/pagination/paginacao";
 import LeadsFilter from "@/features/leads/filters/leads-filter";
-import { useLeadsFilters } from "@/features/leads/hooks/use-leads-filter";
-import { ListaError } from "@/components/sections/listas/lista-erro";
+import {useLeadsFilters} from "@/features/leads/hooks/use-leads-filter";
+import {ListaError} from "@/components/sections/listas/lista-erro";
 import {DarkButton} from "@/components/ui/button/button-darkmode";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 
 const POLLING_INTERVAL = parseInt(process.env.NEXT_PUBLIC_POLLING_INTERVAL || "10000");
 
 export default function LeadsDashboard() {
-    const { status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual, } = useLeadsFilters();
-    const { data: leadsCount, loading: loadingCount, error: errorCount } = useLeadsCount({ status, interesse, fonte, busca: debouncedBusca, refreshKey });
-    const [currentPollingInterval, setCurrentPollingInterval] = useState(POLLING_INTERVAL);
+    const {status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual,} = useLeadsFilters();
 
-    const countAtivo = status === "pendente" ? "Total de leads Ativos" : "Todos os leads Concluídos";
-    const countRevenda = status === "pendente" ? "Total de leads Ativos para Revenda" : "Total de leads Concluidos para Revenda";
-    const countUtilizacao = status === "pendente" ? "Total de leads Ativos para Utilização" : "Total de leads Concluidos para Utilização";
+    const {data: leadsCount, loading: loadingCount, error: errorCount} = useLeadsCount({
+        status,
+        interesse,
+        fonte,
+        busca: debouncedBusca,
+        refreshKey
+    });
+    const [currentPollingInterval, setCurrentPollingInterval] = useState(POLLING_INTERVAL);
 
     const leadsAtivos = leadsCount?.total_ativos ?? 0;
     const leadsRevenda = leadsCount?.total_revendas ?? 0;
     const leadsUtilizacao = leadsCount?.total_utilizacao ?? 0;
     const countLeadsPagination = leadsCount?.count_pagin ?? 0;
 
-    const { leads, loading, isFetching, error } = UseLeads({ status, interesse, fonte, page: pageAtual, busca: debouncedBusca, refreshKey, pollingInterval: currentPollingInterval });
+    const {leads, loading, isFetching, error} = UseLeads({
+        status,
+        interesse,
+        fonte,
+        page: pageAtual,
+        busca: debouncedBusca,
+        refreshKey,
+        pollingInterval: currentPollingInterval
+    });
     const isError = !!error || !!errorCount;
 
     useEffect(() => {
@@ -53,31 +64,37 @@ export default function LeadsDashboard() {
             </header>
 
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-5">
-                <StatCard title={countAtivo} value={leadsAtivos} icon={<Users className="h-6 w-6" />} loading={loadingCount} />
-                <StatCard title={countRevenda} value={leadsRevenda} icon={<Clock className="h-6 w-6" />} loading={loadingCount} />
-                <StatCard title={countUtilizacao} value={leadsUtilizacao} icon={<CalendarDays className="h-6 w-6" />} loading={loadingCount} />
+                <StatCard title={"Total de leads"} value={leadsAtivos} icon={<Users className="h-6 w-6"/>}
+                          loading={loadingCount}/>
+                <StatCard title={"Total de leads para Revenda"} value={leadsRevenda} icon={<Clock className="h-6 w-6"/>}
+                          loading={loadingCount}/>
+                <StatCard title={"Total de leads para Utilização"} value={leadsUtilizacao} icon={<CalendarDays className="h-6 w-6"/>}
+                          loading={loadingCount}/>
             </section>
 
             <LeadsFilter
                 status={status}
+
+
+
                 onStatusChange={handleStatus}
                 busca={busca}
                 onBuscaChange={(e) => setBusca(e.target.value)}
                 fonte={fonte}
                 onFonteChange={handleFonte}
                 interesse={interesse}
-                onInteresseChange={handleInteresse} />
+                onInteresseChange={handleInteresse}/>
 
             <section className="bg-card text-card-foreground  rounded-lg shadow-sm">
                 <div
-                    className="flex items-baseline gap-2 pl-4 pt-3"
+                    className="flex items-baseline gap-2 pl-3 pt-3"
                 >
                     <h3 className="text-lg font-semibold text-foreground">
                         <motion.span
                             key={countLeadsPagination}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1}}
-                            transition={{ duration: 0.4 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.4}}
                             className="inline-block"
                         >
                             {countLeadsPagination}
@@ -88,7 +105,7 @@ export default function LeadsDashboard() {
 
                 {isError ? (
                     <div className="flex w-full items-center justify-center min-h-[170px]">
-                        <ListaError handleRetry={handleRetry} />
+                        <ListaError handleRetry={handleRetry}/>
                     </div>
                 ) : (
                     <>

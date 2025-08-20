@@ -10,10 +10,10 @@ import Parceiros from "@/features/leads/components/parceiros";
 import FormatarData from "@/utils/formatar-data";
 import { renderValue } from "@/utils/funcoes";
 import { cn } from "@/lib/utils";
-import { corFonteBg, corFonteText } from "@/features/leads/utils/efeitosCor";
 import { motion } from "framer-motion";
 import { StatusButton } from "@/features/leads/components/status-button";
 import { LeadInfoItem } from "@/features/leads/components/info-text-item";
+import {DrowpButton} from "@/features/leads/itens/butoon/drowp-button";
 
 interface LeadItemProps {
     lead: LeadType;
@@ -31,28 +31,36 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
         setLocalLeadStatus(lead.status);
     }, [lead.status]);
 
-    const interessePrincipal = lead.interesse?.toLowerCase() || 'utilização';
-    const interesseText = localInteresse === "revenda" ? "Revenda" : "Utilização";
+    useEffect(() => {
+        setLocalInteresse(lead.interesse);
+    }, [lead.interesse]);
+
     const parceiroValidator = lead.parceiros === null ? " " : lead.parceiros;
+
+    const handleFieldUpdate = async (fieldName: keyof LeadType, newValue: any) => {
+        const leadToUpdate = { ...lead, [fieldName]: newValue };
+        await updateLead(leadToUpdate, lead);
+
+        if (fieldName === 'status') {
+            setLocalLeadStatus(newValue);
+        } else if (fieldName === 'interesse') {
+            setLocalInteresse(newValue);
+        }
+    };
 
     const parceiroSave = async (novoValor: string) => {
         if (novoValor !== lead.parceiros) {
-            const updatedLead = { ...lead, parceiros: novoValor };
-            await updateLead(updatedLead, lead);
+            await handleFieldUpdate('parceiros', novoValor);
         }
     };
 
     const StatusUpdate = async () => {
         const newStatus = localLeadStatus.toLowerCase() === "pendente" ? "concluido" : "pendente";
-        const leadToUpdate = { ...lead, status: newStatus };
-        await updateLead(leadToUpdate, lead);
-        setLocalLeadStatus(newStatus);
+        await handleFieldUpdate('status', newStatus);
     };
 
     const handleInteresseUpdate = async (novoInteresse: string) => {
-        const leadToUpdate = { ...lead, interesse: novoInteresse };
-        await updateLead(leadToUpdate, lead);
-        setLocalInteresse(novoInteresse)
+        await handleFieldUpdate('interesse', novoInteresse);
     };
 
     return (
@@ -98,31 +106,7 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
                 </TableCell>
             )}
 
-            <TableCell>
-                <FilterDropdown
-                    label={interessePrincipal}
-                    items={[
-                        { value: "revenda", label: "Revenda" },
-                        { value: "utilizacao", label: "Utilização" },
-                    ]}
-                    onSelect={handleInteresseUpdate}
-                    customTrigger={
-                        <Badge
-                            variant="outline"
-                            className={cn(
-                                "cursor-pointer flex items-center gap-1 text-sm border-transparent",
-                                localInteresse === "revenda"
-                                    ? "bg-revenda text-revenda-foreground"
-                                    : "bg-utilizacao text-utilizacao-foreground"
-                            )}
-                        >
-                            {interesseText}
-                            <ChevronDown className="w-4 h-4" />
-                        </Badge>
-                    }
-                    value={interessePrincipal}
-                />
-            </TableCell>
+            <DrowpButton value={localInteresse} onInterestChange={handleInteresseUpdate}/>
 
             <TableCell className="text-sm text-muted-foreground">
                 {FormatarData(lead.data_hora)}

@@ -6,17 +6,17 @@ import type React from "react";
 interface IProps {
     campo1: string;
     campo2: string;
-    ClassName?: string;
     onSelect: (value: string) => void;
     value: string;
 }
 
-export default function TabsButton({ campo1, campo2, ClassName, onSelect, value }: IProps) {
+export default function TabsButton({ campo1, campo2, onSelect, value }: IProps) {
     return (
         <Tabs value={value} onValueChange={onSelect}>
             <TabsList className="grid w-fit grid-cols-2 bg-secondary rounded-md p-1">
                 <TabsTrigger
                     value="pendente"
+                    //  mantive o dark:data-[state=active]:bg-button-active pois estava dando conflito com o componente do shadcn/ui
                     className="flex items-center gap-2 text-secondary-foreground
                                data-[state=active]:bg-button-active
                                data-[state=active]:text-button-active-foreground

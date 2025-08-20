@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import CountUp from "react-countup";
 
 interface StatCardProps {
     title: string;
@@ -34,12 +35,6 @@ export function StatCard({ title, value, icon, loading = true }: StatCardProps) 
         };
     }, [loading]);
 
-    const numberVariants = {
-        initial: { opacity: 0, scale: 0.8 },
-        animate: { opacity: 1, scale: 1 },
-        exit: { opacity: 0, scale: 0.8 }
-    };
-
     return (
         <Card className="flex-1 min-w-[280px] shadow-sm bg-card">
             <CardContent className="p-6 flex items-center justify-between">
@@ -49,26 +44,22 @@ export function StatCard({ title, value, icon, loading = true }: StatCardProps) 
                         {loading && showLoadingAnimation ? (
                             <motion.div
                                 animate={{
-                                    opacity: [0.4, 0.7, 0.4],
+                                    opacity: [0.6, 1, 0.6],
                                     transition: {
                                         duration: 1.5,
                                         repeat: Infinity,
-                                        repeatType: "loop",
+                                        ease: "easeInOut",
                                     },
                                 }}
-                                className="h-7 w-20 bg-muted rounded-md"
+                                className="h-9 w-20 bg-muted rounded-md"
                             />
                         ) : (
-                            <motion.span
-                                key={value}
-                                variants={numberVariants}
-                                initial="initial"
-                                animate="animate"
-                                transition={{ duration: 0.4 }}
-                                className="inline-block"
-                            >
-                                {value}
-                            </motion.span>
+                            <CountUp
+                                end={value}
+                                duration={1.2}
+                                separator=""
+                                preserveValue={true}
+                            />
                         )}
                     </h2>
                 </div>

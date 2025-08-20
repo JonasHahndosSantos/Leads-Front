@@ -4,6 +4,7 @@ export interface LeadsCountType {
     total_ativos: number;
     total_revendas: number;
     total_utilizacao: number;
+    count_pagin: number;
 }
 interface getParams {
     status: string;

@@ -11,13 +11,13 @@ export default function NotFoundd() {
         <div className="flex h-screen w-full items-center justify-center p-4">
             <Card >
                 <CardContent className="space-y-6 p-8 text-center justify-center items-center">
-                    <FileX className="h-24 w-24 text-blue-600 mx-auto" />
+                    <FileX className="h-24 w-24 text-revenda-foreground mx-auto" />
                     <div className="space-y-3">
-                        <h1 className="text-6xl font-bold text-gray-700">404</h1>
-                        <h2 className="text-xl font-semibold text-gray-600">
+                        <h1 className="text-6xl font-bold text-popover-foreground">404</h1>
+                        <h2 className="text-xl font-semibold text-popover-foreground">
                             Página não encontrada
                         </h2>
-                        <p className="px-4 text-sm leading-relaxed text-gray-600">
+                        <p className="px-4 text-sm leading-relaxed text-popover-foreground">
                             A página que você está procurando não existe ou foi removida.
                         </p>
                     </div>

@@ -11,9 +11,9 @@ export const getInitials = (nome: string) => {
     return '';
 };
 export const renderValue = (value: string | null | undefined, customClass = "") => {
-    const finalClass = cn("text-sm text-gray-700 dark:text-gray-100", customClass);
+    const finalClass = cn("text-sm text-accent-foreground", customClass);
     return value
         ? <div className={finalClass}>{value}</div>
-        : <span className="text-gray-400 dark:text-gray-400 italic font-normal text-sm">Não informado</span>;
+        : <span className="text-nao-informado italic font-normal text-sm">Não informado</span>;
 };
 

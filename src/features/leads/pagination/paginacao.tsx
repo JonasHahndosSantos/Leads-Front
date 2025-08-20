@@ -16,7 +16,11 @@ interface LeadPageProps {
 }
 
 export default function PaginacaoPage({ pageAtual, pageMax, onPageChange }: LeadPageProps) {
-    const totalPages = Math.ceil(pageMax / 10) || 1;
+    const limit = parseInt(
+        process.env.NEXT_PUBLIC_LIMIT_ITENS_POR_PAGE || "10",
+        10
+    )
+    const totalPages = Math.ceil(pageMax / limit) || 1;
     const pagesRange = 2;
 
     const pageScroll = (page: number) => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLeadsCount, LeadsCountType } from "@/services/leads/get-leads-count";
+import {getLeadsCount} from "@/services/leads/get-leads-count";
 
 export interface LeadsCountType {
   total_ativos: number;

@@ -57,7 +57,9 @@ const config: Config = {
                     DEFAULT: "var(--color-utilizacao)",
                     foreground: "var(--color-utilizacao-foreground)",
                 },
+                "nao-informado": "var(--color-nao-informado)",
             },
+
             borderRadius: {
                 lg: "var(--radius-lg)",
                 md: "var(--radius-md)",

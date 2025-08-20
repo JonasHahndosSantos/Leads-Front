@@ -32,7 +32,7 @@ export default function FilterDropdown({ label, items, onSelect, customTrigger, 
                 {customTrigger ?? (
                     <Button
                         variant="outline"
-                        className="flex items-center gap-2 w-full sm:w-auto bg-white cursor-pointer"
+                        className="flex items-center gap-2 w-full sm:w-auto bg-white cursor-pointer "
                     >
                         {displayLabel}
                         <ChevronDown className="h-4 w-4" />

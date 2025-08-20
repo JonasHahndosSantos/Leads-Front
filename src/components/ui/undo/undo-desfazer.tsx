@@ -36,14 +36,18 @@ export default function DesfazerButton() {
                     className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-card text-card-foreground py-2 px-4 rounded-lg shadow-lg flex items-center gap-4 z-50 border border-border"
                 >
                     <span className="text-sm">Operação realizada.</span>
-                    <Button
-                        variant="ghost"
-                        onClick={executeUndo}
-                        className="font-bold uppercase text-primary hover:text-primary/90 transition-colors"
-                    >
-                        Desfazer
-                        <Undo2 className="h-4 w-4 ml-2"/>
-                    </Button>
+                    <div className="flex items-center">
+                        <Button
+                            variant="ghost"
+                            onClick={executeUndo}
+                            className="font-bold uppercase text-primary hover:text-primary/90 transition-colors"
+                        >
+                            Desfazer
+                            <Undo2 className="h-4 w-4 ml-2"/>
+                        </Button>
+                        <span className="text-xs text-muted-foreground ml-2 ">(Ctrl + Z)</span>
+                    </div>
+
                 </motion.div>
             )}
         </AnimatePresence>

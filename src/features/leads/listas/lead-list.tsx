@@ -1,5 +1,5 @@
 "use client";
-import { Table, TableHeader, TableHead, TableBody, TableRow } from "@/components/ui/table";
+import {Table, TableHeader, TableHead, TableBody, TableRow, TableCell} from "@/components/ui/table";
 import { LeadType } from "@/features/leads/schemas/lead-schema";
 import { Briefcase, CalendarDays, Handshake, Megaphone, MoreVertical, User, Zap } from "lucide-react";
 import LeadItem from "@/features/leads/itens/lead-item";
@@ -14,10 +14,6 @@ interface LeadListProps {
 }
 
 export default function LeadList({ leads, onLeadUpdated, interesse, loading }: LeadListProps) {
-
-    if (leads.length === 0 && !loading) return (
-        <ListaVazia descricao={"Nenhum item encontrado. Tente ajustar os filtros"} />
-    );
 
     return (
         <Table>
@@ -55,17 +51,25 @@ export default function LeadList({ leads, onLeadUpdated, interesse, loading }: L
                     </TableHead>
                 </TableRow>
             </TableHeader>
-            <TableBody className="overflow-y-auto">
-                {leads.map((lead, index) => (
-                    <LeadItem
-                        key={lead.id_leads_comercial}
-                        lead={lead}
-                        onLeadUpdated={onLeadUpdated}
-                        interesse={interesse}
-                        delay={index * 0.05}
-                        loadingitens={loading}
-                    />
-                ))}
+            <TableBody>
+                {leads.length === 0 ? (
+                    <TableRow>
+                        <TableCell colSpan={7}>
+                            <ListaVazia descricao={"Nenhum item encontrado. Tente ajustar os filtros"} />
+                        </TableCell>
+                    </TableRow>
+                ) : (
+                    leads.map((lead, index) => (
+                        <LeadItem
+                            key={lead.id_leads_comercial}
+                            lead={lead}
+                            onLeadUpdated={onLeadUpdated}
+                            interesse={interesse}
+                            delay={index * 0.05}
+                            loadingitens={loading}
+                        />
+                    ))
+                )}
             </TableBody>
         </Table>
     );
