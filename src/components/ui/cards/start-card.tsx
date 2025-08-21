@@ -36,7 +36,7 @@ export function StatCard({ title, value, icon, loading = true }: StatCardProps) 
     }, [loading]);
 
     return (
-        <Card className="flex-1 min-w-[280px] shadow-sm bg-card">
+        <Card className="flex-1 min-w-[280px] shadow-sm bg-card transition-colors">
             <CardContent className="p-6 flex items-center justify-between">
                 <div>
                     <p className="text-sm text-muted-foreground">{title}</p>

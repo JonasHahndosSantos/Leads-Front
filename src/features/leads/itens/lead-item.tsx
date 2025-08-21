@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { StatusButton } from "@/features/leads/components/status-button";
 import { LeadInfoItem } from "@/features/leads/components/info-text-item";
-import {DrowpButton} from "@/features/leads/itens/butoon/drowp-button";
+import {DrowpButton} from "@/features/leads/components/butoon/drowp-button";
 
 interface LeadItemProps {
     lead: LeadType;
@@ -105,9 +105,9 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
                     )}
                 </TableCell>
             )}
-
-            <DrowpButton value={localInteresse} onInterestChange={handleInteresseUpdate}/>
-
+            <TableCell>
+                <DrowpButton value={localInteresse} onInterestChange={handleInteresseUpdate}/>
+            </TableCell>
             <TableCell className="text-sm text-muted-foreground">
                 {FormatarData(lead.data_hora)}
             </TableCell>

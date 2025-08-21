@@ -35,7 +35,6 @@
   --color-button-active: var(--button-active);
   --color-button-active-foreground: var(--button-active-foreground);
   --color-nao-informado: var(--nao-informado);
-  --color-button-active: var(--button-active);
 }
 
 :root {
@@ -50,7 +49,7 @@
   --primary-foreground: oklch(0.985 0.002 247.839);
   --secondary: oklch(0.967 0.003 264.542);
   --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
+  --muted: oklch(0.94 0.01 264);
   --muted-foreground: oklch(0.551 0.027 264.364);
   --accent: oklch(0.967 0.003 264.542);
   --accent-foreground: oklch(0.21 0.034 264.665);
@@ -80,7 +79,7 @@
   --primary-foreground: oklch(0.21 0.034 264.665);
   --secondary: oklch(0.278 0.033 256.848);
   --secondary-foreground: oklch(0.985 0.002 247.839);
-  --muted: oklch(0.278 0.033 256.848);
+  --muted: oklch(0.313 0.035 255.352);
   --muted-foreground: oklch(0.707 0.022 261.325);
   --accent: oklch(0.278 0.033 256.848);
   --accent-foreground: oklch(0.985 0.002 247.839);
@@ -103,10 +102,10 @@
   * {
     @apply border-border outline-ring/50;
     }
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
-  .theme-transition * {
-    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out, border-color 0.25s ease-in-out;
+  button, a {
+    @apply transition-colors duration-300;
+  }
 }

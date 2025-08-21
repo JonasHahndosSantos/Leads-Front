@@ -85,7 +85,7 @@ export default function LeadsDashboard() {
                 interesse={interesse}
                 onInteresseChange={handleInteresse}/>
 
-            <section className="bg-card text-card-foreground  rounded-lg shadow-sm">
+            <section className="bg-card text-card-foreground  rounded-lg shadow-sm transition-colors">
                 <div
                     className="flex items-baseline gap-2 pl-3 pt-3"
                 >
