@@ -8,6 +8,7 @@ import { UndoProvider } from "@/components/ui/undo/undo-provider";
 import DesfazerButton from "@/components/ui/undo/undo-desfazer";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import {Toaster} from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,6 +57,7 @@ export default function RootLayout({
                     </UndoProvider>
                 )}
             </AnimatePresence>
+            <Toaster richColors/>
         </ThemeProvider>
         </body>
         </html>

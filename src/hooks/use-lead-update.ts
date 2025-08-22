@@ -2,6 +2,7 @@ import { useState } from "react";
 import { putLeads } from "@/services/leads/put-leads";
 import { LeadType } from "@/features/leads/schemas/lead-schema";
 import {useUndo} from "@/components/ui/undo/undo-provider";
+import {toast} from "sonner";
 
 export function useUpdateLeads(onSuccessCallback: () => void) {
     const [loading, setLoading] = useState(false);
@@ -33,12 +34,12 @@ export function useUpdateLeads(onSuccessCallback: () => void) {
                     onSuccessCallback();
                 }
             };
-
+            toast.success("atualizado com sucesso!");
             registerUndoAction(undoAction);
 
         } catch (err) {
             setError("Erro ao atualizar o lead. Por favor, tente novamente.");
-            console.error(err);
+            toast.error("Erro ao atualizar.");
             throw err;
         } finally {
             setLoading(false);

@@ -58,6 +58,7 @@ const config: Config = {
                     foreground: "var(--color-utilizacao-foreground)",
                 },
                 "nao-informado": "var(--color-nao-informado)",
+                "texto-error": "var(--color-texto-error)",
             },
 
             borderRadius: {

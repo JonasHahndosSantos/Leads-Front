@@ -8,14 +8,28 @@ import {useLeadsCount} from "@/hooks/use-leads-count";
 import PaginacaoPage from "@/features/leads/pagination/paginacao";
 import LeadsFilter from "@/features/leads/filters/leads-filter";
 import {useLeadsFilters} from "@/features/leads/hooks/use-leads-filter";
-import {ListaError} from "@/components/sections/listas/lista-erro";
 import {DarkButton} from "@/components/ui/button/button-darkmode";
 import {motion} from "framer-motion";
+import {ListaError} from "@/components/sections/listas/lista-erro";
 
 const POLLING_INTERVAL = parseInt(process.env.NEXT_PUBLIC_POLLING_INTERVAL || "10000");
 
 export default function LeadsDashboard() {
-    const {status, interesse, fonte, busca, debouncedBusca, pageAtual, refreshKey, handleStatus, handleInteresse, handleFonte, handleLeadUpdated, setBusca, setPageAtual,} = useLeadsFilters();
+    const {
+        status,
+        interesse,
+        fonte,
+        busca,
+        debouncedBusca,
+        pageAtual,
+        refreshKey,
+        handleStatus,
+        handleInteresse,
+        handleFonte,
+        handleLeadUpdated,
+        setBusca,
+        setPageAtual,
+    } = useLeadsFilters();
 
     const {data: leadsCount, loading: loadingCount, error: errorCount} = useLeadsCount({
         status,
@@ -68,13 +82,13 @@ export default function LeadsDashboard() {
                           loading={loadingCount}/>
                 <StatCard title={"Total de leads para Revenda"} value={leadsRevenda} icon={<Clock className="h-6 w-6"/>}
                           loading={loadingCount}/>
-                <StatCard title={"Total de leads para Utilização"} value={leadsUtilizacao} icon={<CalendarDays className="h-6 w-6"/>}
+                <StatCard title={"Total de leads para Utilização"} value={leadsUtilizacao}
+                          icon={<CalendarDays className="h-6 w-6"/>}
                           loading={loadingCount}/>
             </section>
 
             <LeadsFilter
                 status={status}
-
 
 
                 onStatusChange={handleStatus}

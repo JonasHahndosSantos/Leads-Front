@@ -31,10 +31,12 @@ export function ListaError({
                 <div className="mx-auto w-fit mb-2">
                     {icone}
                 </div>
+
+                
             )}
 
-            <h1 className="font-bold">{titulo}</h1>
-            <p className="block sm:inline ml-2 ">{mensagem}</p>
+            <h1 className="font-bold text-texto-error">{titulo}</h1>
+            <p className="block sm:inline ml-2 text-texto-error">{mensagem}</p>
 
             <div className="mt-4">
                 <Button
