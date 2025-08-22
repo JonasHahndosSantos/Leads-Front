@@ -10,13 +10,15 @@ interface ErrorStateProps {
     message: string;
     onRetry: () => void;
     className?: string;
+    errorDetails?: string;
 }
 
 export function ErrorState({
-   title = "Ocorreu um Erro",
-   message,
-   onRetry,
-   className,
+    title = "Ocorreu um Erro",
+    message,
+    onRetry,
+    className,
+    errorDetails,
 }: ErrorStateProps) {
     return (
         <motion.div
@@ -43,6 +45,15 @@ export function ErrorState({
             <Button onClick={onRetry} variant="destructive">
                 Tentar Novamente
             </Button>
+
+            {errorDetails && (
+                <details className="mt-6 text-left w-full">
+                    <summary className="cursor-pointer text-xs text-muted-foreground">Detalhes técnicos</summary>
+                    <pre className="mt-2 p-2 bg-muted/50 rounded-md text-xs text-muted-foreground overflow-auto">
+                        {errorDetails}
+                    </pre>
+                </details>
+            )}
         </motion.div>
     );
 }

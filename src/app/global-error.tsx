@@ -13,6 +13,7 @@ export default function GlobalError({
     useEffect(() => {
         console.error(error);
     }, [error]);
+    const isDeselopment = process.env.NODE_ENV === 'development';
 
     return (
         <html>
@@ -22,6 +23,7 @@ export default function GlobalError({
                 title="Algo correu mal!"
                 message="Ocorreu um erro inesperado na aplicação. Por favor, tente recarregar a página."
                 onRetry={() => reset()}
+                errorDetails={isDeselopment ? `${error.message}\n\n${error.stack}`: undefined}
             />
         </div>
         </body>
