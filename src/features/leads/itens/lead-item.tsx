@@ -77,13 +77,13 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
             transition={{ duration: 0.4, delay: delay }}
         >
             <TableCell className="py-4">
-                <LeadInfoItem lead={lead} />
+                <LeadInfoItem lead={lead} onFieldUpdate={handleFieldUpdate} />
             </TableCell>
             <TableCell>
                     {renderValue(lead.fonte)}
             </TableCell>
 
-            <TableCell className="text-sm text-muted-foreground">
+            <TableCell className="text-sm text-muted-foreground ">
                 {lead.anuncio !== null ? (
                     <>
                         <div>{renderValue(lead.anuncio)}</div>
@@ -95,7 +95,7 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
             </TableCell>
 
             {interesse.toLowerCase() !== "revenda" && (
-                <TableCell>
+                <TableCell className="max-w-[250px]">
                     {localInteresse === "revenda" ? (
                         <div className="relative flex-1 w-50 sm:max-w-xs flex items-center justify-center">
                             <span className="text-muted-foreground font-bold text-lg">—</span>

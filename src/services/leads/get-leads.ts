@@ -29,6 +29,6 @@ export async function getLeads({ limit, offset, status, interesse, fonte, busca 
         params.append('busca', busca);
     }
 
-    const response = await apiLead.get<LeadType[]>(`/?${params.toString()}`);
+    const response = await apiLead.get<LeadType[]>(`/lead?${params.toString()}`);
     return response.data;
 }

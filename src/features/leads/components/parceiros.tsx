@@ -1,7 +1,9 @@
 'use client';
-import {Input} from "@/components/ui/input";
-import {Check, Pencil, X} from "lucide-react";
-import React, {useEffect, useState} from "react";
+import { Check, Pencil, X } from "lucide-react";
+import React, {useEffect, useRef, useState} from "react";
+import { cn } from "@/lib/utils";
+import CopyDados from "@/features/leads/components/copy-dados";
+import {Textarea} from "@/features/leads/components/textarea";
 
 interface ParceirosProps {
     parceiro: string;
@@ -11,63 +13,108 @@ interface ParceirosProps {
 export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [localValue, setLocalValue] = useState(parceiro || "");
+    const editingRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setLocalValue(parceiro || "");
     }, [parceiro]);
 
+    useEffect(() => {
+        if (!isEditing) return;
+
+        function handleClickOutside(event: MouseEvent | TouchEvent) {
+            if (editingRef.current && !editingRef.current.contains(event.target as Node)) {
+                handleCancel();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("touchstart", handleClickOutside);
+        };
+    }, [isEditing]);
+
     const handleSave = () => {
-        onSave(localValue);
+        if (localValue !== parceiro) {
+            onSave(localValue);
+        }
         setIsEditing(false);
     };
     const handleCancel = () => {
         setIsEditing(false);
-    }
+        setLocalValue(parceiro || "");
+    };
 
     const handleEdit = () => {
         setIsEditing(true);
     };
 
+    //funçao para salvar com Enter e Shift Enter agora quebra a linha
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            handleSave();
+        } else if (event.key === 'Escape') {
+            handleCancel();
+        }
+    };
+
     if (isEditing) {
         return (
-            <>
-                <style jsx>{`
-                    ::selection {
-                        background: #dbeafe;
-                        color: #1f2937; 
-                    }
-                `}</style>
-                <div className="relative flex w-48 flex items-center gap-2 bg-white dark:text-gray-100 dark:bg-slate-700">
-                    <Input
-                        value={localValue}
-                        onChange={(e) => setLocalValue(e.target.value)}
-                        className="pl-2 w-full"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
-                         onClick={handleCancel}>
-                        <X className="h-4 w-4 text-red-500"/>
-
-                    </div>
-                    <div className="absolute inset-y-0 right-6 flex items-center pr-2 cursor-pointer" onClick={handleSave}>
-                        {localValue != parceiro && (<Check className="h-4 w-4 text-green-600"/>)}
-
-                    </div>
+            <div ref={editingRef} className="relative flex w-full max-w-xs flex-col items-start gap-2 text-foreground">
+                <Textarea
+                    value={localValue}
+                    onChange={(e) => setLocalValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="pl-2 pr-14 w-full bg-card min-h-[40px] resize-y"
+                    autoFocus
+                    rows={3}
+                    maxLength={255}
+                />
+                <span className="text-xs text-muted-foreground self-end">
+                    {localValue.length} / 255
+                </span>
+                <div className="absolute top-2 right-0 flex items-center pr-2">
+                    {localValue !== parceiro && (
+                        <button onClick={handleSave} className="p-1 rounded-md hover:bg-muted">
+                            <Check className="h-4 w-4 text-green-600" />
+                        </button>
+                    )}
+                    <button onClick={handleCancel} className="p-1 rounded-md hover:bg-muted">
+                        <X className="h-4 w-4 text-destructive" />
+                    </button>
                 </div>
-            </>
+            </div>
         );
     }
 
     const displayValue = parceiro && parceiro.trim() !== "" ? parceiro : "Sem parceiros";
+    const hasValue = displayValue !== "Sem parceiros";
 
     return (
         <div
-            className="flex items-center gap-2 cursor-pointer pl-12"
+            className="flex items-center gap-2 cursor-pointer pl-12 group max-w-[250px]"
             onClick={handleEdit}
         >
-            <div className={`text-sm ${parceiro ? "text-gray-700 dark:text-gray-100" : "text-gray-400 italic dark:text-gray-100 "}`}>
+            <div className={cn(
+                "text-sm whitespace-pre-wrap truncate",
+                !hasValue ? "text-muted-foreground italic" : "text-foreground"
+            )}>
                 {displayValue}
             </div>
-            <Pencil className="h-4 w-4 text-gray-600 hover:text-orange-500 dark:text-gray-100 dark:hover:text-orange-500" />
+
+            {hasValue && (
+                <div className="flex items-center ">
+                    <Pencil className="h-5 w-5 text-muted-foreground" />
+
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <CopyDados item={parceiro} />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

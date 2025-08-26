@@ -3,7 +3,7 @@ import apiLead from "@/api/api_lead";
 
 export async function putLeads(leadsupdate: LeadType): Promise<LeadType> {
     try {
-        const response = await apiLead.put<LeadType>(`/edit`, leadsupdate);
+        const response = await apiLead.put<LeadType>(`/lead/edit`, leadsupdate);
 
         return response.data;
     } catch (error) {

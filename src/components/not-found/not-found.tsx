@@ -23,7 +23,7 @@ export default function NotFoundd() {
                     </div>
 
                     <div className="space-y-3 pt-2">
-                        <Link href="/" className="block">
+                        <Link href="/leads" className="block">
                             <Button className="bg-blue-700 w-full rounded-lg py-4 font-medium text-white transition-colors hover:bg-blue-600">
                                 <Home className="mr-2 h-5 w-5" />
                                 Voltar a Tela principal

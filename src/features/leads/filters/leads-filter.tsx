@@ -44,6 +44,7 @@ export default function LeadsFilter({ status, onStatusChange, busca, onBuscaChan
                         { value: 'Instagram', label: 'Instagram' },
                         { value: 'Facebook', label: 'Facebook' },
                         { value: 'Google', label: 'Google' },
+                        { value: 'outros', label: 'Outros' },
                     ]}
                     onSelect={onFonteChange}
                     value={fonte}

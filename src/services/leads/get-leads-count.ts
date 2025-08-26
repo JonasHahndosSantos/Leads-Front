@@ -26,7 +26,7 @@ export async function getLeadsCount({status, interesse, fonte, busca}: getParams
         params.append('busca', busca);
     }
 
-    const response = await apiLead.get<LeadsCountType>(`/count?${params}`);
+    const response = await apiLead.get<LeadsCountType>(`/lead/count?${params}`);
 
     return response.data;
 }

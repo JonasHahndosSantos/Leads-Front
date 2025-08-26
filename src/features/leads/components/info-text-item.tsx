@@ -1,42 +1,69 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { getInitials, renderValue } from "@/utils/funcoes";
+import { getInitials } from "@/utils/funcoes";
 import CopyDados from "@/features/leads/components/copy-dados";
 import { formatarCNPJ } from "@/utils/formatar-cnpj";
 import type { LeadType } from "@/features/leads/schemas/lead-schema";
+import { EditarCampo } from "@/features/leads/components/EditarCampos";
+import {formatarTelefone} from "@/utils/formar-telefone"; // Usando o seu componente de edição
 
-interface LeadInfoCellProps {
+interface LeadInfoItemProps {
     lead: LeadType;
+    onFieldUpdate: (fieldName: keyof LeadType, newValue: string) => void;
 }
 
-export function LeadInfoItem({ lead }: LeadInfoCellProps) {
-    const emailExibido = lead.email && lead.email.length > 35
-        ? `${lead.email.slice(0, 35)}...`
-        : lead.email;
+export function LeadInfoItem({ lead, onFieldUpdate }: LeadInfoItemProps) {
+
+    const unFormatNumber = (value: string) => value.replace(/[^\d]/g, '');
 
     return (
         <div className="flex items-center gap-3">
             {lead.nome ? (
-                <Avatar className="h-9 w-9 font-semibold border-0 ">
-                    <AvatarFallback className="bg-primary text-primary-foreground ">{getInitials(lead.nome)}</AvatarFallback>
+                <Avatar className="h-9 w-9 font-semibold border-0">
+                    <AvatarFallback className="bg-foreground text-background">{getInitials(lead.nome)}</AvatarFallback>
                 </Avatar>
             ) : (
                 <Avatar className="invisible h-9 w-9" />
             )}
 
-            <div className="min-w-[150px] max-w-[200px]">
+            <div className="min-w-[150px] max-w-[200px] space-y-1">
+                {/* Nome */}
                 <div className="flex items-center">
-                    {renderValue(lead.nome, "font-medium text-foreground")}
+                    <EditarCampo
+                        initialValue={lead.nome}
+                        onSave={(newValue) => onFieldUpdate('nome', newValue)}
+                        className="font-medium text-foreground truncate"
+                    />
                     {lead.nome && <CopyDados item={lead.nome} />}
                 </div>
 
+                {/* Telefone */}
                 <div className="flex items-center text-sm">
-                    {renderValue(emailExibido, "text-muted-foreground")}
-                    {lead.email && <CopyDados item={lead.email} />}
+                    <EditarCampo
+                        initialValue={formatarTelefone(lead.telefone)}
+                        onSave={(newValue) => onFieldUpdate('telefone', unFormatNumber(newValue))}
+                        className="text-muted-foreground truncate"
+                    />
+                    {lead.telefone && <CopyDados item={formatarTelefone(lead.telefone)} />}
                 </div>
 
+                {/* CNPJ */}
                 <div className="flex items-center text-sm">
-                    {renderValue(formatarCNPJ(lead.cnpj), "text-muted-foreground")}
-                    {lead.cnpj && <CopyDados item={lead.cnpj} />}
+                    <EditarCampo
+                        initialValue={formatarCNPJ(lead.cnpj)}
+                        onSave={(newValue) => onFieldUpdate('cnpj', unFormatNumber(newValue))}
+                        className="text-muted-foreground truncate"
+                    />
+                    {lead.cnpj && <CopyDados item={formatarCNPJ(lead.cnpj)} />}
+                </div>
+
+                {/* Email */}
+                <div className="flex items-center text-sm">
+                    <EditarCampo
+                        initialValue={lead.email}
+                        onSave={(newValue) => onFieldUpdate('email', newValue)}
+                        className="text-muted-foreground truncate"
+                    />
+                    {lead.email && <CopyDados item={lead.email} />}
                 </div>
             </div>
         </div>
