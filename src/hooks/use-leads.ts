@@ -60,7 +60,7 @@ export default function UseLeads({ status, interesse, fonte, page, refreshKey, b
                     offset: page ?? 1,
                 });
                 setLeads(newLeads);
-            } catch (err) {
+            } catch (err: unknown) {
                 setError("Não foi possível carregar os leads.");
             } finally {
                 setLoading(false);
@@ -78,7 +78,7 @@ export default function UseLeads({ status, interesse, fonte, page, refreshKey, b
             return () => clearInterval(intervalId);
         }
 
-    }, [status, interesse, fonte, filterBusca, page, limit, refreshKey, pollingInterval]);
+    }, [status, filterFonte, filterInteresse, filterBusca, page, limit, refreshKey, pollingInterval]);
 
     return { leads, loading, isFetching, error };
 }

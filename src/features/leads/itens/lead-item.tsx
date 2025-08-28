@@ -1,10 +1,7 @@
 "use client";
 import { TableCell } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown } from "lucide-react";
 import type { LeadType } from "@/features/leads/schemas/lead-schema";
 import React, { useEffect, useState } from "react";
-import FilterDropdown from "@/components/ui/dropdown/filter-dropdown";
 import { useUpdateLeads } from "@/hooks/use-lead-update";
 import Parceiros from "@/features/leads/components/parceiros";
 import FormatarData from "@/utils/formatar-data";
@@ -14,6 +11,7 @@ import { motion } from "framer-motion";
 import { StatusButton } from "@/features/leads/components/status-button";
 import { LeadInfoItem } from "@/features/leads/components/info-text-item";
 import {DrowpButton} from "@/features/leads/components/butoon/drowp-button";
+import {BuscarCidades} from "@/components/busca-cidades";
 
 interface LeadItemProps {
     lead: LeadType;
@@ -37,7 +35,7 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
 
     const parceiroValidator = lead.parceiros === null ? " " : lead.parceiros;
 
-    const handleFieldUpdate = async (fieldName: keyof LeadType, newValue: any) => {
+    const handleFieldUpdate = async (fieldName: keyof LeadType, newValue: string) => {
         const leadToUpdate = { ...lead, [fieldName]: newValue };
         await updateLead(leadToUpdate, lead);
 
@@ -93,11 +91,18 @@ export default function LeadItem({ lead, onLeadUpdated, interesse, delay, loadin
                     <div>{renderValue(lead.anuncio)}</div>
                 )}
             </TableCell>
+            <TableCell className="text-sm text-muted-foreground">
+
+                <BuscarCidades
+                    initialValue={lead.cidade}
+                    onSave={(newCity) => handleFieldUpdate('cidade', newCity)}
+                />
+            </TableCell>
 
             {interesse.toLowerCase() !== "revenda" && (
                 <TableCell className="max-w-[250px]">
                     {localInteresse === "revenda" ? (
-                        <div className="relative flex-1 w-50 sm:max-w-xs flex items-center justify-center">
+                        <div className="relative flex-1 w-50 sm:max-w-xs flex items-center justify-start pl-8">
                             <span className="text-muted-foreground font-bold text-lg">—</span>
                         </div>
                     ) : (

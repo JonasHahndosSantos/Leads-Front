@@ -1,7 +1,7 @@
 'use client';
 import { Input } from "@/components/ui/input";
 import { Check, X } from "lucide-react";
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect, useRef, useCallback} from "react";
 import { cn } from "@/lib/utils";
 
 interface EditableFieldProps {
@@ -18,6 +18,12 @@ export function EditarCampo({ initialValue, onSave, className }: EditableFieldPr
     useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
+
+    const handleCancel = useCallback(() => {
+        setValue(initialValue);
+        setIsEditing(false);
+    }, [initialValue]);
+
     useEffect(() => {
         if (!isEditing) return;
 
@@ -34,17 +40,12 @@ export function EditarCampo({ initialValue, onSave, className }: EditableFieldPr
             document.removeEventListener("mousedown", handleClickOutside);
             document.removeEventListener("touchstart", handleClickOutside);
         };
-    }, [isEditing]);
+    }, [isEditing, handleCancel]);
 
     const handleSave = () => {
         if (value !== initialValue) {
             onSave(value);
         }
-        setIsEditing(false);
-    };
-
-    const handleCancel = () => {
-        setValue(initialValue);
         setIsEditing(false);
     };
 
@@ -67,9 +68,12 @@ export function EditarCampo({ initialValue, onSave, className }: EditableFieldPr
                     autoFocus
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-1">
-                    <button onClick={handleSave} className="p-1 rounded-md hover:bg-muted">
-                        <Check className="h-4 w-4 text-green-600" />
-                    </button>
+                    { value !== initialValue && (
+                        <button onClick={handleSave} className="p-1 rounded-md hover:bg-muted">
+                            <Check className="h-4 w-4 text-green-600" />
+                        </button>
+                    )}
+
                     <button onClick={handleCancel} className="p-1 rounded-md hover:bg-muted">
                         <X className="h-4 w-4 text-destructive" />
                     </button>

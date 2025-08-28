@@ -1,11 +1,10 @@
-export default function FormatarData(data: any){
+export default function FormatarData(data: string) {
     const dataObj = new Date(data);
-    const opcoes = {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    } as const;
-    return new Intl.DateTimeFormat('pt-BR', opcoes).format(dataObj);
+    const dia = String(dataObj.getDate()).padStart(2, '0');
+    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+    const ano = dataObj.getFullYear();
+    const horas = String(dataObj.getHours()).padStart(2, '0');
+    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+
+    return `${dia}/${mes}/${ano}, ${horas}:${minutos}`;
 }

@@ -37,7 +37,8 @@ export function useLeadsCount({ status, interesse, fonte, busca, refreshKey }: u
       try {
         const result = await getLeadsCount({ status, interesse: filterInteresse, fonte: filterFonte, busca });
         setData(result);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        console.error(err);
         setError("Não foi possível carregar os contadores.");
       } finally {
         setLoading(false);

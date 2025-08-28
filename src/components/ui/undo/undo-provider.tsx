@@ -1,7 +1,7 @@
 'use client';
 import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
 
-type UndoableAction = () => Promise<any>;
+type UndoableAction = () => Promise<unknown>;
 
 interface UndoContextType {
     registerUndoAction: (action: UndoableAction) => void;

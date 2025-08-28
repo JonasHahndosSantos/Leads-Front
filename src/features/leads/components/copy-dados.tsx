@@ -22,17 +22,14 @@ export default function CopyDados({ item, className }: CopyDadosProps) {
                 fallbackCopyTextToClipboard(textToCopy);
             });
         } else {
-            // Se a API moderna não estiver disponível, usamos o método antigo diretamente.
             fallbackCopyTextToClipboard(textToCopy);
         }
     };
 
-    // O método "manual" que funciona em contextos não seguros.
     const fallbackCopyTextToClipboard = (text: string) => {
         const textArea = document.createElement("textarea");
         textArea.value = text;
 
-        // Torna a área de texto invisível
         textArea.style.position = "fixed";
         textArea.style.top = "-9999px";
         textArea.style.left = "-9999px";
@@ -55,13 +52,12 @@ export default function CopyDados({ item, className }: CopyDadosProps) {
     };
 
     return (
-        // Convertido para <button> para melhor acessibilidade
         <button
             className={cn("h-4 w-4 ml-1 cursor-pointer text-muted-foreground pl-2", className)}
             onClick={() => handleCopy(item)}
             aria-label="Copiar"
         >
-            {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+            {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4 hover:text-blue-500" />}
         </button>
     );
 }

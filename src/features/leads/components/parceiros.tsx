@@ -1,6 +1,6 @@
 'use client';
 import { Check, Pencil, X } from "lucide-react";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import { cn } from "@/lib/utils";
 import CopyDados from "@/features/leads/components/copy-dados";
 import {Textarea} from "@/features/leads/components/textarea";
@@ -16,6 +16,11 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
     const editingRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        setLocalValue(parceiro || "");
+    }, [parceiro]);
+
+    const handleCancel = useCallback(() => {
+        setIsEditing(false);
         setLocalValue(parceiro || "");
     }, [parceiro]);
 
@@ -35,17 +40,13 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
             document.removeEventListener("mousedown", handleClickOutside);
             document.removeEventListener("touchstart", handleClickOutside);
         };
-    }, [isEditing]);
+    }, [isEditing, handleCancel]);
 
     const handleSave = () => {
         if (localValue !== parceiro) {
             onSave(localValue);
         }
         setIsEditing(false);
-    };
-    const handleCancel = () => {
-        setIsEditing(false);
-        setLocalValue(parceiro || "");
     };
 
     const handleEdit = () => {
@@ -96,7 +97,7 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
 
     return (
         <div
-            className="flex items-center gap-2 cursor-pointer pl-12 group max-w-[250px]"
+            className="flex items-center gap-2 cursor-pointer group max-w-[250px]"
             onClick={handleEdit}
         >
             <div className={cn(
@@ -107,12 +108,12 @@ export default function Parceiros({ parceiro, onSave }: ParceirosProps) {
             </div>
 
             {hasValue && (
-                <div className="flex items-center ">
-                    <Pencil className="h-5 w-5 text-muted-foreground" />
-
+                <div className="flexbox flex-col">
                     <div onClick={(e) => e.stopPropagation()}>
                         <CopyDados item={parceiro} />
                     </div>
+                    <Pencil className="h-7 w-7 text-muted-foreground pl-3 hover:text-ring" />
+
                 </div>
             )}
         </div>

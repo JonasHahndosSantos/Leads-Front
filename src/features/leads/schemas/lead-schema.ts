@@ -12,6 +12,7 @@ export const leadSchema = z.object({
     parceiros: z.string(),
     anuncio: z.string(),
     status: z.string(),
+    cidade: z.string(),
 });
 
 export type LeadType = z.infer<typeof leadSchema>;

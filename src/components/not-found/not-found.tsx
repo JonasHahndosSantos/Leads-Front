@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {Home, FileSearch, Frown, LocateOff, Ghost, FileX} from "lucide-react";
+import {Home, FileX} from "lucide-react";
 import Link from "next/link";
 import { CardContent } from "@/components/ui/CardContent";
 import { Card } from "@/components/ui/card";
