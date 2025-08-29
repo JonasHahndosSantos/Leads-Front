@@ -133,6 +133,7 @@ export default function LeadsDashboard() {
                         </div>
                         {countLeadsPagination > 11 && !isError && (
                             <PaginacaoPage
+
                                 pageAtual={pageAtual}
                                 pageMax={countLeadsPagination}
                                 onPageChange={setPageAtual}

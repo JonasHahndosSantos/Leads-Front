@@ -31,7 +31,7 @@ export const UndoProvider = ({ children }: { children: ReactNode }) => {
         setUndoAction(() => action);
         setIsToastVisible(true);
 
-        const newTimeoutId = setTimeout(dismissToast, 5000);
+        const newTimeoutId = setTimeout(dismissToast, 3000);
         setTimeoutId(newTimeoutId);
     }, [dismissToast, timeoutId]);
 

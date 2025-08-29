@@ -34,7 +34,10 @@ export function useUpdateLeads(onSuccessCallback: () => void) {
                     onSuccessCallback();
                 }
             };
-            toast.success("atualizado com sucesso!");
+            toast.success("atualizado com sucesso!",{
+                duration:3000,
+            });
+
             registerUndoAction(undoAction);
 
         } catch (err) {

@@ -59,7 +59,7 @@ export default function PaginacaoPage({ pageAtual, pageMax, onPageChange }: Lead
     const disabledClasses = "opacity-50 cursor-not-allowed";
 
     return (
-        <Pagination>
+        <Pagination className="pb-3">
             <PaginationContent>
                 <PaginationItem>
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
