@@ -2,7 +2,7 @@
 import { Check, Pencil, X } from "lucide-react";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import { cn } from "@/lib/utils";
-import CopyDados from "@/features/leads/components/copy-dados";
+import CopyDados from "@/components/ui/button/copy-dados";
 import {Textarea} from "@/features/leads/components/textarea";
 
 interface ParceirosProps {

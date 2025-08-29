@@ -12,7 +12,6 @@ export default function CopyDados({ item, className }: CopyDadosProps) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = (textToCopy: string) => {
-        // O método 'navigator.clipboard' é a primeira escolha, mas só funciona em contextos seguros.
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(textToCopy).then(() => {
                 setCopied(true);

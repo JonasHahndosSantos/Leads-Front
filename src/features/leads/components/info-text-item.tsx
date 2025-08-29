@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/funcoes";
-import CopyDados from "@/features/leads/components/copy-dados";
+import CopyDados from "@/components/ui/button/copy-dados";
 import { formatarCNPJ } from "@/utils/formatar-cnpj";
 import type { LeadType } from "@/features/leads/schemas/lead-schema";
 import { EditarCampo } from "@/features/leads/components/EditarCampos";
