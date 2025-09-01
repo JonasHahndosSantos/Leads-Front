@@ -74,9 +74,8 @@ export function BuscarCidades({ initialValue, onSave }: BuscarCidadeProps) {
             <span className={cn("truncate", "text-accent-foreground", !hasValue && "italic text-muted-foreground")}>
                 {selectedCityName || "Não informado"}
             </span>
-            {hasValue && (
                 <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-            )}
+
         </div>
     );
 
